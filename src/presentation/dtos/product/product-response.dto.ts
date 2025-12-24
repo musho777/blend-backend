@@ -1,11 +1,11 @@
-import { Product } from '@domain/entities/product.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { Product } from "@domain/entities/product.entity";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ProductResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
   id: string;
 
-  @ApiProperty({ example: 'iPhone 15 Pro' })
+  @ApiProperty({ example: "iPhone 15 Pro" })
   title: string;
 
   @ApiProperty({ example: 999.99 })
@@ -14,8 +14,18 @@ export class ProductResponseDto {
   @ApiProperty({ example: 50 })
   stock: number;
 
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
   categoryId: string;
+
+  @ApiProperty({
+    example: [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg",
+    ],
+    required: false,
+    type: [String],
+  })
+  imageUrls: string[];
 
   @ApiProperty({ example: true })
   isFeatured: boolean;
@@ -29,19 +39,21 @@ export class ProductResponseDto {
   @ApiProperty({ example: 10 })
   priority: number;
 
-  @ApiProperty({ example: '2024-01-01T00:00:00.000Z', required: false })
+  @ApiProperty({ example: "2024-01-01T00:00:00.000Z", required: false })
   createdAt?: Date;
 
-  @ApiProperty({ example: '2024-01-01T00:00:00.000Z', required: false })
+  @ApiProperty({ example: "2024-01-01T00:00:00.000Z", required: false })
   updatedAt?: Date;
 
   static fromDomain(product: Product): ProductResponseDto {
+    console.log(product);
     return {
       id: product.id,
       title: product.title,
       price: product.price,
       stock: product.stock,
       categoryId: product.categoryId,
+      imageUrls: product.imageUrls,
       isFeatured: product.isFeatured,
       isBestSeller: product.isBestSeller,
       isBestSelect: product.isBestSelect,
@@ -52,6 +64,6 @@ export class ProductResponseDto {
   }
 
   static fromDomainArray(products: Product[]): ProductResponseDto[] {
-    return products.map(product => ProductResponseDto.fromDomain(product));
+    return products.map((product) => ProductResponseDto.fromDomain(product));
   }
 }

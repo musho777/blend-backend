@@ -9,6 +9,7 @@ export class ProductMapper {
       Number(entity.price),
       entity.stock,
       entity.categoryId,
+      entity.imageUrls || [],
       entity.isFeatured,
       entity.isBestSeller,
       entity.isBestSelect,
@@ -25,6 +26,7 @@ export class ProductMapper {
     entity.price = domain.price;
     entity.stock = domain.stock;
     entity.categoryId = domain.categoryId;
+    entity.imageUrls = domain.imageUrls;
     entity.isFeatured = domain.isFeatured;
     entity.isBestSeller = domain.isBestSeller;
     entity.isBestSelect = domain.isBestSelect;
@@ -38,6 +40,7 @@ export class ProductMapper {
     if (domain.price !== undefined) entity.price = domain.price;
     if (domain.stock !== undefined) entity.stock = domain.stock;
     if (domain.categoryId !== undefined) entity.categoryId = domain.categoryId;
+    if (domain.imageUrls !== undefined) entity.imageUrls = domain.imageUrls;
     if (domain.isFeatured !== undefined) entity.isFeatured = domain.isFeatured;
     if (domain.isBestSeller !== undefined) entity.isBestSeller = domain.isBestSeller;
     if (domain.isBestSelect !== undefined) entity.isBestSelect = domain.isBestSelect;

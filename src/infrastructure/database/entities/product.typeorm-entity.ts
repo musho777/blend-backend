@@ -18,6 +18,9 @@ export class ProductTypeormEntity {
   @Column({ name: 'category_id' })
   categoryId: string;
 
+  @Column('json', { name: 'image_urls', nullable: true, default: () => "'[]'" })
+  imageUrls: string[];
+
   @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 

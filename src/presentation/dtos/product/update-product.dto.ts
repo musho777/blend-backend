@@ -1,5 +1,6 @@
-import { IsString, IsNumber, IsBoolean, IsOptional, IsUUID, Min } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, IsOptional, IsUUID, Min, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 
 export class UpdateProductDto {
   @ApiProperty({ example: 'iPhone 15 Pro Max', description: 'Product title', required: false })
@@ -9,12 +10,16 @@ export class UpdateProductDto {
 
   @ApiProperty({ example: 1099.99, description: 'Product price', minimum: 0, required: false })
   @IsOptional()
+  @Transform(({ value }) => value ? Number(value) : value)
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   price?: number;
 
   @ApiProperty({ example: 30, description: 'Available stock quantity', minimum: 0, required: false })
   @IsOptional()
+  @Transform(({ value }) => value ? Number(value) : value)
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   stock?: number;
@@ -24,23 +29,51 @@ export class UpdateProductDto {
   @IsUUID()
   categoryId?: string;
 
+  @ApiProperty({ 
+    example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 
+    description: 'Product image URLs', 
+    required: false,
+    type: [String]
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  imageUrls?: string[];
+
   @ApiProperty({ example: true, description: 'Is product featured', required: false })
   @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return Boolean(value);
+  })
   @IsBoolean()
   isFeatured?: boolean;
 
   @ApiProperty({ example: false, description: 'Is product a best seller', required: false })
   @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return Boolean(value);
+  })
   @IsBoolean()
   isBestSeller?: boolean;
 
   @ApiProperty({ example: false, description: 'Is product a best select', required: false })
   @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return Boolean(value);
+  })
   @IsBoolean()
   isBestSelect?: boolean;
 
   @ApiProperty({ example: 20, description: 'Display priority', required: false })
   @IsOptional()
+  @Transform(({ value }) => value ? Number(value) : value)
+  @Type(() => Number)
   @IsNumber()
   priority?: number;
 }

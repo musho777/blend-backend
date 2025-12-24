@@ -23,7 +23,8 @@
       "@infrastructure/*": ["src/infrastructure/*"],
       "@presentation/*": ["src/presentation/*"],
       "@auth/*": ["src/auth/*"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@common/*": ["src/common/*"]
     }
   }
 }

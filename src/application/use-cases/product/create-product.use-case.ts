@@ -8,6 +8,7 @@ export interface CreateProductDto {
   price: number;
   stock: number;
   categoryId: string;
+  imageUrls?: string[];
   isFeatured?: boolean;
   isBestSeller?: boolean;
   isBestSelect?: boolean;
@@ -28,6 +29,7 @@ export class CreateProductUseCase {
       dto.price,
       dto.stock,
       dto.categoryId,
+      dto.imageUrls || [],
       dto.isFeatured || false,
       dto.isBestSeller || false,
       dto.isBestSelect || false,

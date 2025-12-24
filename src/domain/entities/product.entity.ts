@@ -5,24 +5,27 @@ export class Product {
     public price: number,
     public stock: number,
     public categoryId: string,
+    public imageUrls: string[] = [],
     public isFeatured: boolean = false,
     public isBestSeller: boolean = false,
     public isBestSelect: boolean = false,
     public priority: number = 0,
     public readonly createdAt?: Date,
-    public readonly updatedAt?: Date,
+    public readonly updatedAt?: Date
   ) {}
 
   updateStock(quantity: number): void {
     if (this.stock + quantity < 0) {
-      throw new Error('Insufficient stock');
+      throw new Error("Insufficient stock");
     }
     this.stock += quantity;
   }
 
   reduceStock(quantity: number): void {
     if (quantity > this.stock) {
-      throw new Error(`Cannot reduce stock by ${quantity}. Only ${this.stock} available.`);
+      throw new Error(
+        `Cannot reduce stock by ${quantity}. Only ${this.stock} available.`
+      );
     }
     this.stock -= quantity;
   }

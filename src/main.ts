@@ -1,17 +1,23 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ValidationPipe } from "@nestjs/common";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  app.useStaticAssets(join(__dirname, "..", "uploads"), {
+    prefix: "/uploads",
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
 
   app.enableCors({
@@ -21,28 +27,30 @@ async function bootstrap() {
 
   // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('Blend API')
-    .setDescription('Blend - Online Shop Backend API with DDD Architecture')
-    .setVersion('1.0')
+    .setTitle("Blend API - Admin Panel")
+
+    .setVersion("1.0")
     .addBearerAuth(
       {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "JWT",
+        description: "Enter JWT token (get it from POST /admin/login)",
+        in: "header",
       },
-      'JWT-auth',
+      "JWT-auth"
     )
-    .addTag('Authentication', 'Admin authentication endpoints')
-    .addTag('Products', 'Product management endpoints (Admin only)')
-    .addTag('Categories', 'Category management endpoints (Admin only)')
-    .addTag('Home', 'Public home page endpoints')
+    .addTag("Authentication", "🔐 Admin authentication endpoints")
+    .addTag("Products", "📦 Product management endpoints (Admin only)")
+    .addTag("Categories", "📂 Category management endpoints (Admin only)")
+    .addTag("Orders", "🛒 Order management endpoints (Admin only)")
+    .addTag("Home", "🏠 Public home page endpoints (No auth required)")
+    .addServer("http://localhost:3000", "Development Server")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
+  SwaggerModule.setup("api", app, document, {
     swaggerOptions: {
       persistAuthorization: true,
     },
