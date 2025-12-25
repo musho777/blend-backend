@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   UseInterceptors,
   UploadedFiles,
@@ -19,6 +20,7 @@ import {
   ApiParam,
   ApiConsumes,
   ApiBody,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import * as multer from "multer";
@@ -28,6 +30,7 @@ import { JwtAuthGuard } from "@auth/guards/jwt-auth.guard";
 import { CreateProductDto } from "../dtos/product/create-product.dto";
 import { UpdateProductDto } from "../dtos/product/update-product.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
+import { PaginationDto, PaginatedResponseDto } from "../dtos/common/pagination.dto";
 import { CreateProductUseCase } from "@application/use-cases/product/create-product.use-case";
 import { UpdateProductUseCase } from "@application/use-cases/product/update-product.use-case";
 import { DeleteProductUseCase } from "@application/use-cases/product/delete-product.use-case";
@@ -71,15 +74,64 @@ export class ProductController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: "Get all products" })
+  @ApiOperation({ summary: "Get all products with optional pagination" })
+  @ApiQuery({
+    name: "page",
+    required: false,
+    description: "Page number (starting from 1)",
+    example: 1,
+  })
+  @ApiQuery({
+    name: "limit",
+    required: false,
+    description: "Number of products per page (max 100)",
+    example: 10,
+  })
   @ApiResponse({
     status: 200,
-    description: "List of all products",
-    type: [ProductResponseDto],
+    description: "List of products with pagination metadata",
+    schema: {
+      type: "object",
+      properties: {
+        data: {
+          type: "array",
+          items: { $ref: "#/components/schemas/ProductResponseDto" },
+        },
+        meta: {
+          type: "object",
+          properties: {
+            page: { type: "number", example: 1 },
+            limit: { type: "number", example: 10 },
+            total: { type: "number", example: 100 },
+            pages: { type: "number", example: 10 },
+            hasNext: { type: "boolean", example: true },
+            hasPrevious: { type: "boolean", example: false },
+          },
+        },
+      },
+    },
   })
-  async findAll(): Promise<ProductResponseDto[]> {
-    const products = await this.getProductsUseCase.execute();
-    return ProductResponseDto.fromDomainArray(products);
+  async findAll(
+    @Query() paginationDto: PaginationDto
+  ): Promise<PaginatedResponseDto<ProductResponseDto>> {
+    const page = paginationDto.page || 1;
+    const limit = paginationDto.limit || 10;
+    const skip = paginationDto.skip;
+    
+    const result = await this.getProductsUseCase.executePaginated({
+      page,
+      limit,
+      skip,
+    });
+    
+    const productDtos = ProductResponseDto.fromDomainArray(result.data);
+    
+    return PaginatedResponseDto.create(
+      productDtos,
+      result.total,
+      page,
+      limit
+    );
   }
 
   @Get(":id")

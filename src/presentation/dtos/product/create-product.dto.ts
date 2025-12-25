@@ -41,6 +41,15 @@ export class CreateProductDto {
   categoryId: string;
 
   @ApiProperty({
+    example: "High-quality smartphone with advanced camera features",
+    description: "Product description",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({
     example: [
       "https://example.com/image1.jpg",
       "https://example.com/image2.jpg",

@@ -21,6 +21,7 @@ export class CreateProductUseCase {
       dto.price,
       dto.stock,
       dto.categoryId,
+      dto.description || '',
       dto.imageUrls || [],
       dto.isFeatured || false,
       dto.isBestSeller || false,

@@ -5,6 +5,7 @@ export class Product {
     public price: number,
     public stock: number,
     public categoryId: string,
+    public description: string = '',
     public imageUrls: string[] = [],
     public isFeatured: boolean = false,
     public isBestSeller: boolean = false,

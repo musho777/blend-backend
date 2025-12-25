@@ -18,6 +18,9 @@ export class ProductTypeormEntity {
   @Column({ name: 'category_id' })
   categoryId: string;
 
+  @Column('text', { nullable: true, default: '' })
+  description: string;
+
   @Column('json', { name: 'image_urls', nullable: true, default: () => "'[]'" })
   imageUrls: string[];
 

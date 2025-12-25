@@ -1,7 +1,19 @@
 import { Product } from '../entities/product.entity';
 
+export interface PaginationOptions {
+  page: number;
+  limit: number;
+  skip: number;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+}
+
 export interface IProductRepository {
   findAll(): Promise<Product[]>;
+  findAllPaginated(options: PaginationOptions): Promise<PaginatedResult<Product>>;
   findById(id: string): Promise<Product | null>;
   findFeatured(): Promise<Product[]>;
   findBestSellers(): Promise<Product[]>;

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IProductRepository } from '@domain/repositories/product.repository.interface';
+import { IProductRepository, PaginationOptions, PaginatedResult } from '@domain/repositories/product.repository.interface';
 import { Product } from '@domain/entities/product.entity';
 import { ProductTypeormEntity } from '../database/entities/product.typeorm-entity';
 import { ProductMapper } from '../database/mappers/product.mapper';
@@ -18,6 +18,17 @@ export class ProductRepository implements IProductRepository {
       order: { priority: 'DESC', createdAt: 'DESC' },
     });
     return entities.map(ProductMapper.toDomain);
+  }
+
+  async findAllPaginated(options: PaginationOptions): Promise<PaginatedResult<Product>> {
+    const [entities, total] = await this.repository.findAndCount({
+      order: { priority: 'DESC', createdAt: 'DESC' },
+      skip: options.skip,
+      take: options.limit,
+    });
+
+    const data = entities.map(ProductMapper.toDomain);
+    return { data, total };
   }
 
   async findById(id: string): Promise<Product | null> {

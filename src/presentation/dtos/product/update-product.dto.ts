@@ -29,6 +29,11 @@ export class UpdateProductDto {
   @IsUUID()
   categoryId?: string;
 
+  @ApiProperty({ example: "Updated product description", description: "Product description", required: false })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
   @ApiProperty({ 
     example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 
     description: 'Existing product image URLs to keep', 

@@ -17,6 +17,9 @@ export class ProductResponseDto {
   @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
   categoryId: string;
 
+  @ApiProperty({ example: "High-quality smartphone with advanced camera features" })
+  description: string;
+
   @ApiProperty({
     example: [
       "https://example.com/image1.jpg",
@@ -53,6 +56,7 @@ export class ProductResponseDto {
       price: product.price,
       stock: product.stock,
       categoryId: product.categoryId,
+      description: product.description,
       imageUrls: product.imageUrls,
       isFeatured: product.isFeatured,
       isBestSeller: product.isBestSeller,
