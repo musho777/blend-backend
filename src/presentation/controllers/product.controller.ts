@@ -27,6 +27,7 @@ import * as multer from "multer";
 import * as path from "path";
 import * as fs from "fs";
 import { JwtAuthGuard } from "@auth/guards/jwt-auth.guard";
+import { ImageOptimizationService } from "@common/services/image-optimization.service";
 import { CreateProductDto } from "../dtos/product/create-product.dto";
 import { UpdateProductDto } from "../dtos/product/update-product.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
@@ -40,7 +41,7 @@ import { FileUploadValidationPipe } from "@common/pipes/file-upload-validation.p
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = "./uploads/products";
+    const uploadPath = "./uploads/products/temp";
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -70,7 +71,8 @@ export class ProductController {
     private readonly updateProductUseCase: UpdateProductUseCase,
     private readonly deleteProductUseCase: DeleteProductUseCase,
     private readonly getProductsUseCase: GetProductsUseCase,
-    private readonly getProductByIdUseCase: GetProductByIdUseCase
+    private readonly getProductByIdUseCase: GetProductByIdUseCase,
+    private readonly imageOptimizationService: ImageOptimizationService
   ) {}
 
   @Get()
@@ -196,8 +198,21 @@ export class ProductController {
     @UploadedFiles() files?: Express.Multer.File[]
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
-      createProductDto.imageUrls = files.map(
-        (file) => `/uploads/products/${file.filename}`
+      const tempPaths = files.map((file) => file.path);
+      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
+        tempPaths,
+        "./uploads/products",
+        {
+          preset: "large",
+          quality: 80,
+          convertToWebP: true,
+          removeMetadata: true,
+          preserveAspectRatio: true,
+        }
+      );
+
+      createProductDto.imageUrls = optimizedPaths.map(
+        (filePath) => filePath.replace("./uploads", "/uploads")
       );
     }
 
@@ -259,8 +274,21 @@ export class ProductController {
     @UploadedFiles() files?: Express.Multer.File[]
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
-      const newImageUrls = files.map(
-        (file) => `/uploads/products/${file.filename}`
+      const tempPaths = files.map((file) => file.path);
+      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
+        tempPaths,
+        "./uploads/products",
+        {
+          preset: "large",
+          quality: 80,
+          convertToWebP: true,
+          removeMetadata: true,
+          preserveAspectRatio: true,
+        }
+      );
+
+      const newImageUrls = optimizedPaths.map(
+        (filePath) => filePath.replace("./uploads", "/uploads")
       );
       
       if (!updateProductDto.imageUrls) {

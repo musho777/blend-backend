@@ -9,6 +9,7 @@ import { UpdateProductUseCase } from '@application/use-cases/product/update-prod
 import { DeleteProductUseCase } from '@application/use-cases/product/delete-product.use-case';
 import { GetProductsUseCase } from '@application/use-cases/product/get-products.use-case';
 import { GetProductByIdUseCase } from '@application/use-cases/product/get-product-by-id.use-case';
+import { ImageOptimizationService } from '@common/services/image-optimization.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductTypeormEntity])],
@@ -23,6 +24,7 @@ import { GetProductByIdUseCase } from '@application/use-cases/product/get-produc
     DeleteProductUseCase,
     GetProductsUseCase,
     GetProductByIdUseCase,
+    ImageOptimizationService,
   ],
   exports: [PRODUCT_REPOSITORY],
 })
