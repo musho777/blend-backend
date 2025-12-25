@@ -31,7 +31,7 @@ export class UpdateProductDto {
 
   @ApiProperty({ 
     example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 
-    description: 'Product image URLs', 
+    description: 'Existing product image URLs to keep', 
     required: false,
     type: [String]
   })
@@ -39,6 +39,17 @@ export class UpdateProductDto {
   @IsArray()
   @IsString({ each: true })
   imageUrls?: string[];
+
+  @ApiProperty({ 
+    example: ['https://example.com/image3.jpg'], 
+    description: 'Image URLs to remove from product', 
+    required: false,
+    type: [String]
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  imagesToRemove?: string[];
 
   @ApiProperty({ example: true, description: 'Is product featured', required: false })
   @IsOptional()

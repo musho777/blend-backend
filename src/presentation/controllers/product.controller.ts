@@ -165,7 +165,7 @@ export class ProductController {
   @ApiParam({ name: "id", description: "Product UUID" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    description: "Product data with optional images (up to 10 files)",
+    description: "Product data with optional images (up to 10 files). New images will be added to existing ones.",
     schema: {
       type: "object",
       properties: {
@@ -180,10 +180,16 @@ export class ProductController {
         isBestSeller: { type: "boolean", example: false },
         isBestSelect: { type: "boolean", example: false },
         priority: { type: "number", example: 20 },
+        imagesToRemove: {
+          type: "array",
+          items: { type: "string" },
+          description: "Image URLs to remove from product",
+          example: ["/uploads/products/old-image.png"]
+        },
         images: {
           type: "array",
           items: { type: "string", format: "binary" },
-          description: "Product image files (max 10)",
+          description: "Product image files (max 10) - will be added to existing images",
           maxItems: 10,
         },
       },
@@ -201,9 +207,14 @@ export class ProductController {
     @UploadedFiles() files?: Express.Multer.File[]
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
-      updateProductDto.imageUrls = files.map(
+      const newImageUrls = files.map(
         (file) => `/uploads/products/${file.filename}`
       );
+      
+      if (!updateProductDto.imageUrls) {
+        updateProductDto.imageUrls = [];
+      }
+      updateProductDto.imageUrls.push(...newImageUrls);
     }
 
     const product = await this.updateProductUseCase.execute(
