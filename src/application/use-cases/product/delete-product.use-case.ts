@@ -22,8 +22,8 @@ export class DeleteProductUseCase {
     if (existingProduct.imageUrls && existingProduct.imageUrls.length > 0) {
       for (const imageUrl of existingProduct.imageUrls) {
         try {
-          const filename = imageUrl.replace("/uploads/products/", "");
-          const filePath = path.join(process.cwd(), filename);
+          const relativePath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+          const filePath = path.join(process.cwd(), relativePath);
 
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
