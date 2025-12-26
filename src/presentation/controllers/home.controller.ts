@@ -2,10 +2,12 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from '../dtos/product/product-response.dto';
 import { CategoryResponseDto } from '../dtos/category/category-response.dto';
+import { BannerResponseDto } from '../dtos/banner/banner-response.dto';
 import { GetFeaturedProductsUseCase } from '@application/use-cases/home/get-featured-products.use-case';
 import { GetBestSellersUseCase } from '@application/use-cases/home/get-best-sellers.use-case';
 import { GetBestSelectUseCase } from '@application/use-cases/home/get-best-select.use-case';
 import { GetCategoriesUseCase } from '@application/use-cases/category/get-categories.use-case';
+import { GetActiveBannersUseCase } from '@application/use-cases/banner/get-active-banners.use-case';
 
 @ApiTags('Home')
 @Controller('home')
@@ -15,6 +17,7 @@ export class HomeController {
     private readonly getBestSellersUseCase: GetBestSellersUseCase,
     private readonly getBestSelectUseCase: GetBestSelectUseCase,
     private readonly getCategoriesUseCase: GetCategoriesUseCase,
+    private readonly getActiveBannersUseCase: GetActiveBannersUseCase,
   ) {}
 
   @Get('slider')
@@ -47,5 +50,13 @@ export class HomeController {
   async getCategories(): Promise<CategoryResponseDto[]> {
     const categories = await this.getCategoriesUseCase.execute();
     return CategoryResponseDto.fromDomainArray(categories);
+  }
+
+  @Get('banners')
+  @ApiOperation({ summary: 'Get active banners', description: 'Public endpoint - no authentication required. Returns only banners where isActive = true, sorted by priority ASC (lowest priority number appears first)' })
+  @ApiResponse({ status: 200, description: 'List of active banners sorted by priority', type: [BannerResponseDto] })
+  async getBanners(): Promise<BannerResponseDto[]> {
+    const banners = await this.getActiveBannersUseCase.execute();
+    return BannerResponseDto.fromDomainArray(banners);
   }
 }

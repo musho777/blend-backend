@@ -11,9 +11,13 @@ import { GetFeaturedProductsUseCase } from '@application/use-cases/home/get-feat
 import { GetBestSellersUseCase } from '@application/use-cases/home/get-best-sellers.use-case';
 import { GetBestSelectUseCase } from '@application/use-cases/home/get-best-select.use-case';
 import { GetCategoriesUseCase } from '@application/use-cases/category/get-categories.use-case';
+import { BannerModule } from './banner.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductTypeormEntity, CategoryTypeormEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ProductTypeormEntity, CategoryTypeormEntity]),
+    BannerModule,
+  ],
   controllers: [HomeController],
   providers: [
     {

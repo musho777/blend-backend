@@ -1,0 +1,38 @@
+import { Banner } from '@domain/entities/banner.entity';
+import { BannerTypeormEntity } from '../entities/banner.typeorm-entity';
+
+export class BannerMapper {
+  static toDomain(entity: BannerTypeormEntity): Banner {
+    return new Banner(
+      entity.id,
+      entity.image,
+      entity.url,
+      entity.text,
+      entity.isActive,
+      entity.priority,
+      entity.createdAt,
+      entity.updatedAt,
+    );
+  }
+
+  static toTypeorm(domain: Banner): BannerTypeormEntity {
+    const entity = new BannerTypeormEntity();
+    entity.id = domain.id;
+    entity.image = domain.image;
+    entity.url = domain.url;
+    entity.text = domain.text;
+    entity.isActive = domain.isActive;
+    entity.priority = domain.priority;
+    return entity;
+  }
+
+  static toTypeormPartial(domain: Partial<Banner>): Partial<BannerTypeormEntity> {
+    const entity: Partial<BannerTypeormEntity> = {};
+    if (domain.image !== undefined) entity.image = domain.image;
+    if (domain.url !== undefined) entity.url = domain.url;
+    if (domain.text !== undefined) entity.text = domain.text;
+    if (domain.isActive !== undefined) entity.isActive = domain.isActive;
+    if (domain.priority !== undefined) entity.priority = domain.priority;
+    return entity;
+  }
+}

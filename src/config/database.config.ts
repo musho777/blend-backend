@@ -4,6 +4,7 @@ import { ProductTypeormEntity } from '@infrastructure/database/entities/product.
 import { CategoryTypeormEntity } from '@infrastructure/database/entities/category.typeorm-entity';
 import { OrderTypeormEntity } from '@infrastructure/database/entities/order.typeorm-entity';
 import { AdminTypeormEntity } from '@infrastructure/database/entities/admin.typeorm-entity';
+import { BannerTypeormEntity } from '@infrastructure/database/entities/banner.typeorm-entity';
 
 export const getDatabaseConfig = (
   configService: ConfigService,
@@ -19,6 +20,7 @@ export const getDatabaseConfig = (
     CategoryTypeormEntity,
     OrderTypeormEntity,
     AdminTypeormEntity,
+    BannerTypeormEntity,
   ],
   synchronize: true, // Set to false in production and use migrations
   logging: configService.get<string>('NODE_ENV') === 'development',
