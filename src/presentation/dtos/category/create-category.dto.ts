@@ -11,7 +11,8 @@ export class CreateCategoryDto {
   @IsString()
   slug?: string;
 
-  @ApiProperty({ example: 'https://example.com/images/electronics.jpg', description: 'Category image URL' })
+  @ApiProperty({ example: 'https://example.com/images/electronics.jpg', description: 'Category image URL (set automatically when image file is uploaded)', required: false })
+  @IsOptional()
   @IsString()
-  image: string;
+  image?: string;
 }

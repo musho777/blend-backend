@@ -1,12 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ICategoryRepository, CATEGORY_REPOSITORY } from '@domain/repositories/category.repository.interface';
 import { Category } from '@domain/entities/category.entity';
-
-export interface UpdateCategoryDto {
-  title?: string;
-  slug?: string;
-  image?: string;
-}
+import { UpdateCategoryDto } from '@presentation/dtos/category/update-category.dto';
 
 @Injectable()
 export class UpdateCategoryUseCase {

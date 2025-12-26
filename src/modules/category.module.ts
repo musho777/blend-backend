@@ -9,6 +9,7 @@ import { UpdateCategoryUseCase } from '@application/use-cases/category/update-ca
 import { DeleteCategoryUseCase } from '@application/use-cases/category/delete-category.use-case';
 import { GetCategoriesUseCase } from '@application/use-cases/category/get-categories.use-case';
 import { GetCategoryByIdUseCase } from '@application/use-cases/category/get-category-by-id.use-case';
+import { ImageOptimizationService } from '@common/services/image-optimization.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryTypeormEntity])],
@@ -23,6 +24,7 @@ import { GetCategoryByIdUseCase } from '@application/use-cases/category/get-cate
     DeleteCategoryUseCase,
     GetCategoriesUseCase,
     GetCategoryByIdUseCase,
+    ImageOptimizationService,
   ],
   exports: [CATEGORY_REPOSITORY],
 })

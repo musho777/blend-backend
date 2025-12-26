@@ -1,13 +1,8 @@
 import { Inject, Injectable, ConflictException } from '@nestjs/common';
 import { ICategoryRepository, CATEGORY_REPOSITORY } from '@domain/repositories/category.repository.interface';
 import { Category } from '@domain/entities/category.entity';
+import { CreateCategoryDto } from '@presentation/dtos/category/create-category.dto';
 import { v4 as uuidv4 } from 'uuid';
-
-export interface CreateCategoryDto {
-  title: string;
-  slug?: string;
-  image: string;
-}
 
 @Injectable()
 export class CreateCategoryUseCase {
@@ -28,7 +23,7 @@ export class CreateCategoryUseCase {
       uuidv4(),
       dto.title,
       slug,
-      dto.image,
+      dto.image || '',
     );
 
     return await this.categoryRepository.create(category);
