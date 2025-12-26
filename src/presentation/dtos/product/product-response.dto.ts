@@ -17,7 +17,9 @@ export class ProductResponseDto {
   @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
   categoryId: string;
 
-  @ApiProperty({ example: "High-quality smartphone with advanced camera features" })
+  @ApiProperty({
+    example: "High-quality smartphone with advanced camera features",
+  })
   description: string;
 
   @ApiProperty({
@@ -49,7 +51,6 @@ export class ProductResponseDto {
   updatedAt?: Date;
 
   static fromDomain(product: Product): ProductResponseDto {
-    console.log(product);
     return {
       id: product.id,
       title: product.title,
