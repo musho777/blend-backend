@@ -1,8 +1,11 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IProductRepository, PRODUCT_REPOSITORY } from '@domain/repositories/product.repository.interface';
-import { Product } from '@domain/entities/product.entity';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  IProductRepository,
+  PRODUCT_REPOSITORY,
+} from "@domain/repositories/product.repository.interface";
+import { Product } from "@domain/entities/product.entity";
+import * as fs from "fs";
+import * as path from "path";
 
 export interface UpdateProductDto {
   title?: string;
@@ -21,7 +24,7 @@ export interface UpdateProductDto {
 export class UpdateProductUseCase {
   constructor(
     @Inject(PRODUCT_REPOSITORY)
-    private readonly productRepository: IProductRepository,
+    private readonly productRepository: IProductRepository
   ) {}
 
   async execute(id: string, dto: UpdateProductDto): Promise<Product> {
@@ -35,14 +38,14 @@ export class UpdateProductUseCase {
     if (dto.imagesToRemove && dto.imagesToRemove.length > 0) {
       for (const imageUrl of dto.imagesToRemove) {
         try {
-          const filename = imageUrl.replace('/uploads/products/', '');
-          const filePath = path.join(process.cwd(), 'uploads', 'products', filename);
-          
+          const filename = imageUrl.replace("/uploads/products/", "");
+          const filePath = path.join(process.cwd(), filename);
+
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }
-          
-          finalImageUrls = finalImageUrls.filter(url => url !== imageUrl);
+
+          finalImageUrls = finalImageUrls.filter((url) => url !== imageUrl);
         } catch (error) {
           console.error(`Failed to delete image file: ${imageUrl}`, error);
         }

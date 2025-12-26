@@ -1,13 +1,16 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IProductRepository, PRODUCT_REPOSITORY } from '@domain/repositories/product.repository.interface';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  IProductRepository,
+  PRODUCT_REPOSITORY,
+} from "@domain/repositories/product.repository.interface";
+import * as fs from "fs";
+import * as path from "path";
 
 @Injectable()
 export class DeleteProductUseCase {
   constructor(
     @Inject(PRODUCT_REPOSITORY)
-    private readonly productRepository: IProductRepository,
+    private readonly productRepository: IProductRepository
   ) {}
 
   async execute(id: string): Promise<void> {
@@ -19,9 +22,9 @@ export class DeleteProductUseCase {
     if (existingProduct.imageUrls && existingProduct.imageUrls.length > 0) {
       for (const imageUrl of existingProduct.imageUrls) {
         try {
-          const filename = imageUrl.replace('/uploads/products/', '');
-          const filePath = path.join(process.cwd(), 'uploads', 'products', filename);
-          
+          const filename = imageUrl.replace("/uploads/products/", "");
+          const filePath = path.join(process.cwd(), filename);
+
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
           }

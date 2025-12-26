@@ -1,6 +1,19 @@
-import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { ICategoryRepository, CATEGORY_REPOSITORY } from '@domain/repositories/category.repository.interface';
-import { IProductRepository, PRODUCT_REPOSITORY } from '@domain/repositories/product.repository.interface';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import {
+  ICategoryRepository,
+  CATEGORY_REPOSITORY,
+} from "@domain/repositories/category.repository.interface";
+import {
+  IProductRepository,
+  PRODUCT_REPOSITORY,
+} from "@domain/repositories/product.repository.interface";
+import * as fs from "fs";
+import * as path from "path";
 
 @Injectable()
 export class DeleteCategoryUseCase {
@@ -8,7 +21,7 @@ export class DeleteCategoryUseCase {
     @Inject(CATEGORY_REPOSITORY)
     private readonly categoryRepository: ICategoryRepository,
     @Inject(PRODUCT_REPOSITORY)
-    private readonly productRepository: IProductRepository,
+    private readonly productRepository: IProductRepository
   ) {}
 
   async execute(id: string): Promise<void> {
@@ -23,6 +36,27 @@ export class DeleteCategoryUseCase {
       throw new BadRequestException(
         `Cannot delete category "${existingCategory.title}" because it has ${products.length} product(s) associated with it. Please remove or reassign the products first.`
       );
+    }
+
+    // Delete category image from file system if it exists
+    if (existingCategory.image) {
+      console.log(existingCategory.image);
+      try {
+        const filename = existingCategory.image.replace(
+          "/uploads/categories/",
+          ""
+        );
+        const filePath = path.join(process.cwd(), filename);
+        if (fs.existsSync(filePath)) {
+          console.log("fdjhgdkjfhgdjkf");
+          fs.unlinkSync(filePath);
+        }
+      } catch (error) {
+        console.error(
+          `Failed to delete category image file: ${existingCategory.image}`,
+          error
+        );
+      }
     }
 
     await this.categoryRepository.delete(id);
