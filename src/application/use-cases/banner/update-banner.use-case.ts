@@ -1,15 +1,18 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IBannerRepository, BANNER_REPOSITORY } from '@domain/repositories/banner.repository.interface';
-import { Banner } from '@domain/entities/banner.entity';
-import { UpdateBannerDto } from '@presentation/dtos/banner/update-banner.dto';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  IBannerRepository,
+  BANNER_REPOSITORY,
+} from "@domain/repositories/banner.repository.interface";
+import { Banner } from "@domain/entities/banner.entity";
+import { UpdateBannerDto } from "@presentation/dtos/banner/update-banner.dto";
+import * as fs from "fs";
+import * as path from "path";
 
 @Injectable()
 export class UpdateBannerUseCase {
   constructor(
     @Inject(BANNER_REPOSITORY)
-    private readonly bannerRepository: IBannerRepository,
+    private readonly bannerRepository: IBannerRepository
   ) {}
 
   async execute(id: string, dto: UpdateBannerDto): Promise<Banner> {
@@ -19,16 +22,23 @@ export class UpdateBannerUseCase {
     }
 
     // Delete old image if a new image is provided
-    if (dto.image && existingBanner.image && dto.image !== existingBanner.image) {
+    if (
+      dto.image &&
+      existingBanner.image &&
+      dto.image !== existingBanner.image
+    ) {
       try {
-        const filename = existingBanner.image.replace('/uploads/banners/', '');
-        const filePath = path.join(process.cwd(), 'uploads', 'banners', filename);
+        const filename = existingBanner.image.replace("/uploads/banners/", "");
+        const filePath = path.join(process.cwd(), filename);
 
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
       } catch (error) {
-        console.error(`Failed to delete old banner image file: ${existingBanner.image}`, error);
+        console.error(
+          `Failed to delete old banner image file: ${existingBanner.image}`,
+          error
+        );
       }
     }
 
@@ -40,7 +50,7 @@ export class UpdateBannerUseCase {
       dto.isActive !== undefined ? dto.isActive : existingBanner.isActive,
       dto.priority !== undefined ? dto.priority : existingBanner.priority,
       existingBanner.createdAt,
-      existingBanner.updatedAt,
+      existingBanner.updatedAt
     );
 
     return await this.bannerRepository.update(id, updatedBanner);
