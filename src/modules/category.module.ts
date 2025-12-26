@@ -10,9 +10,13 @@ import { DeleteCategoryUseCase } from '@application/use-cases/category/delete-ca
 import { GetCategoriesUseCase } from '@application/use-cases/category/get-categories.use-case';
 import { GetCategoryByIdUseCase } from '@application/use-cases/category/get-category-by-id.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
+import { ProductModule } from './product.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategoryTypeormEntity])],
+  imports: [
+    TypeOrmModule.forFeature([CategoryTypeormEntity]),
+    ProductModule,
+  ],
   controllers: [CategoryController],
   providers: [
     {
