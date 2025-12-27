@@ -1,0 +1,16 @@
+node_modules
+dist
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+PROJECT_SUMMARY.md
+USAGE_GUIDE.md
+SWAGGER_GUIDE.md
+.claude
+*.md
+.DS_Store
+uploads/*
+!uploads/.gitkeep
+migrations
