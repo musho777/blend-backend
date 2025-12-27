@@ -6,6 +6,7 @@ import { getDatabaseConfig } from './config/database.config';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './modules/product.module';
 import { CategoryModule } from './modules/category.module';
+import { SubcategoryModule } from './modules/subcategory.module';
 import { BannerModule } from './modules/banner.module';
 import { HomeModule } from './modules/home.module';
 
@@ -23,6 +24,7 @@ import { HomeModule } from './modules/home.module';
     AuthModule,
     ProductModule,
     CategoryModule,
+    SubcategoryModule,
     BannerModule,
     HomeModule,
   ],

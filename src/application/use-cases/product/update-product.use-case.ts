@@ -1,8 +1,12 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import {
   IProductRepository,
   PRODUCT_REPOSITORY,
 } from "@domain/repositories/product.repository.interface";
+import {
+  ISubcategoryRepository,
+  SUBCATEGORY_REPOSITORY,
+} from "@domain/repositories/subcategory.repository.interface";
 import { Product } from "@domain/entities/product.entity";
 import * as fs from "fs";
 import * as path from "path";
@@ -12,6 +16,7 @@ export interface UpdateProductDto {
   price?: number;
   stock?: number;
   categoryId?: string;
+  subcategoryId?: string;
   imageUrls?: string[];
   imagesToRemove?: string[];
   isFeatured?: boolean;
@@ -24,13 +29,34 @@ export interface UpdateProductDto {
 export class UpdateProductUseCase {
   constructor(
     @Inject(PRODUCT_REPOSITORY)
-    private readonly productRepository: IProductRepository
+    private readonly productRepository: IProductRepository,
+    @Inject(SUBCATEGORY_REPOSITORY)
+    private readonly subcategoryRepository: ISubcategoryRepository
   ) {}
 
   async execute(id: string, dto: UpdateProductDto): Promise<Product> {
     const existingProduct = await this.productRepository.findById(id);
     if (!existingProduct) {
       throw new NotFoundException(`Product with id ${id} not found`);
+    }
+
+    // Validate subcategory belongs to category if provided
+    if (dto.subcategoryId !== undefined) {
+      if (dto.subcategoryId) {
+        const subcategory = await this.subcategoryRepository.findById(dto.subcategoryId);
+        if (!subcategory) {
+          throw new BadRequestException(`Subcategory with ID ${dto.subcategoryId} not found`);
+        }
+
+        // Check against the new categoryId if provided, otherwise use existing
+        const targetCategoryId = dto.categoryId || existingProduct.categoryId;
+        if (subcategory.categoryId !== targetCategoryId) {
+          throw new BadRequestException(
+            `Subcategory ${dto.subcategoryId} does not belong to category ${targetCategoryId}`
+          );
+        }
+      }
+      // If dto.subcategoryId is explicitly null or empty string, allow it (clearing subcategory)
     }
 
     let finalImageUrls = existingProduct.imageUrls || [];

@@ -5,6 +5,7 @@ export class Product {
     public price: number,
     public stock: number,
     public categoryId: string,
+    public subcategoryId: string | null = null,
     public description: string = '',
     public imageUrls: string[] = [],
     public isFeatured: boolean = false,

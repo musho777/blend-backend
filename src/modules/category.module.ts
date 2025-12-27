@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryTypeormEntity } from '@infrastructure/database/entities/category.typeorm-entity';
 import { CategoryRepository } from '@infrastructure/repositories/category.repository';
@@ -9,13 +9,16 @@ import { UpdateCategoryUseCase } from '@application/use-cases/category/update-ca
 import { DeleteCategoryUseCase } from '@application/use-cases/category/delete-category.use-case';
 import { GetCategoriesUseCase } from '@application/use-cases/category/get-categories.use-case';
 import { GetCategoryByIdUseCase } from '@application/use-cases/category/get-category-by-id.use-case';
+import { GetSubcategoriesByCategoryIdUseCase } from '@application/use-cases/subcategory/get-subcategories-by-category-id.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
 import { ProductModule } from './product.module';
+import { SubcategoryModule } from './subcategory.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CategoryTypeormEntity]),
-    ProductModule,
+    forwardRef(() => ProductModule),
+    forwardRef(() => SubcategoryModule),
   ],
   controllers: [CategoryController],
   providers: [
@@ -28,6 +31,7 @@ import { ProductModule } from './product.module';
     DeleteCategoryUseCase,
     GetCategoriesUseCase,
     GetCategoryByIdUseCase,
+    GetSubcategoriesByCategoryIdUseCase,
     ImageOptimizationService,
   ],
   exports: [CATEGORY_REPOSITORY],

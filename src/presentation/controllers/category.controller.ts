@@ -35,6 +35,8 @@ import { UpdateCategoryUseCase } from "@application/use-cases/category/update-ca
 import { DeleteCategoryUseCase } from "@application/use-cases/category/delete-category.use-case";
 import { GetCategoriesUseCase } from "@application/use-cases/category/get-categories.use-case";
 import { GetCategoryByIdUseCase } from "@application/use-cases/category/get-category-by-id.use-case";
+import { GetSubcategoriesByCategoryIdUseCase } from "@application/use-cases/subcategory/get-subcategories-by-category-id.use-case";
+import { SubcategoryResponseDto } from "../dtos/subcategory/subcategory-response.dto";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -69,6 +71,7 @@ export class CategoryController {
     private readonly deleteCategoryUseCase: DeleteCategoryUseCase,
     private readonly getCategoriesUseCase: GetCategoriesUseCase,
     private readonly getCategoryByIdUseCase: GetCategoryByIdUseCase,
+    private readonly getSubcategoriesByCategoryIdUseCase: GetSubcategoriesByCategoryIdUseCase,
     private readonly imageOptimizationService: ImageOptimizationService
   ) {}
 
@@ -224,5 +227,18 @@ export class CategoryController {
   async remove(@Param("id") id: string): Promise<{ message: string }> {
     await this.deleteCategoryUseCase.execute(id);
     return { message: "Category deleted successfully" };
+  }
+
+  @Get(":id/subcategories")
+  @ApiOperation({ summary: "Get all subcategories for a specific category" })
+  @ApiParam({ name: "id", description: "Category UUID" })
+  @ApiResponse({
+    status: 200,
+    description: "List of subcategories belonging to the category",
+    type: [SubcategoryResponseDto],
+  })
+  async getSubcategories(@Param("id") id: string): Promise<SubcategoryResponseDto[]> {
+    const subcategories = await this.getSubcategoriesByCategoryIdUseCase.execute(id);
+    return SubcategoryResponseDto.fromDomainArray(subcategories);
   }
 }

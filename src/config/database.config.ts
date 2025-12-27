@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ProductTypeormEntity } from '@infrastructure/database/entities/product.typeorm-entity';
 import { CategoryTypeormEntity } from '@infrastructure/database/entities/category.typeorm-entity';
+import { SubcategoryTypeormEntity } from '@infrastructure/database/entities/subcategory.typeorm-entity';
 import { OrderTypeormEntity } from '@infrastructure/database/entities/order.typeorm-entity';
 import { AdminTypeormEntity } from '@infrastructure/database/entities/admin.typeorm-entity';
 import { BannerTypeormEntity } from '@infrastructure/database/entities/banner.typeorm-entity';
@@ -18,6 +19,7 @@ export const getDatabaseConfig = (
   entities: [
     ProductTypeormEntity,
     CategoryTypeormEntity,
+    SubcategoryTypeormEntity,
     OrderTypeormEntity,
     AdminTypeormEntity,
     BannerTypeormEntity,

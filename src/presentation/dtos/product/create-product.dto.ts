@@ -41,6 +41,15 @@ export class CreateProductDto {
   categoryId: string;
 
   @ApiProperty({
+    example: "550e8400-e29b-41d4-a716-446655440000",
+    description: "Subcategory UUID (optional, must belong to selected category)",
+    required: false,
+  })
+  @IsOptional()
+  @IsUUID()
+  subcategoryId?: string;
+
+  @ApiProperty({
     example: "High-quality smartphone with advanced camera features",
     description: "Product description",
     required: false,

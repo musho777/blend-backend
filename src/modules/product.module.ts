@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductTypeormEntity } from '@infrastructure/database/entities/product.typeorm-entity';
 import { ProductRepository } from '@infrastructure/repositories/product.repository';
@@ -10,9 +10,13 @@ import { DeleteProductUseCase } from '@application/use-cases/product/delete-prod
 import { GetProductsUseCase } from '@application/use-cases/product/get-products.use-case';
 import { GetProductByIdUseCase } from '@application/use-cases/product/get-product-by-id.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
+import { SubcategoryModule } from './subcategory.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductTypeormEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ProductTypeormEntity]),
+    forwardRef(() => SubcategoryModule),
+  ],
   controllers: [ProductController],
   providers: [
     {

@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { CategoryTypeormEntity } from './category.typeorm-entity';
+import { SubcategoryTypeormEntity } from './subcategory.typeorm-entity';
 
 @Entity('products')
 export class ProductTypeormEntity {
@@ -17,6 +18,9 @@ export class ProductTypeormEntity {
 
   @Column({ name: 'category_id' })
   categoryId: string;
+
+  @Column({ name: 'subcategory_id', nullable: true })
+  subcategoryId: string;
 
   @Column('text', { nullable: true, default: '' })
   description: string;
@@ -45,4 +49,8 @@ export class ProductTypeormEntity {
   @ManyToOne(() => CategoryTypeormEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'category_id' })
   category: CategoryTypeormEntity;
+
+  @ManyToOne(() => SubcategoryTypeormEntity, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'subcategory_id' })
+  subcategory: SubcategoryTypeormEntity;
 }
