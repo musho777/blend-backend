@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getDatabaseConfig } from './config/database.config';
 import { AuthModule } from './auth/auth.module';
+import { UserAuthModule } from './modules/user-auth.module';
+import { UserManagementModule } from './modules/user-management.module';
 import { ProductModule } from './modules/product.module';
 import { CategoryModule } from './modules/category.module';
 import { SubcategoryModule } from './modules/subcategory.module';
@@ -22,6 +24,8 @@ import { HomeModule } from './modules/home.module';
       useFactory: getDatabaseConfig,
     }),
     AuthModule,
+    UserAuthModule,
+    UserManagementModule,
     ProductModule,
     CategoryModule,
     SubcategoryModule,

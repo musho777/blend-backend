@@ -38,4 +38,28 @@ export class OrderRepository implements IOrderRepository {
     const saved = await this.repository.save(entity);
     return OrderMapper.toDomain(saved);
   }
+
+  async findByUserId(userId: string): Promise<Order[]> {
+    const entities = await this.repository.find({
+      where: { userId },
+      order: { createdAt: 'DESC' },
+    });
+    return entities.map(OrderMapper.toDomain);
+  }
+
+  async findByGuestEmail(guestEmail: string): Promise<Order[]> {
+    const entities = await this.repository.find({
+      where: { guestEmail },
+      order: { createdAt: 'DESC' },
+    });
+    return entities.map(OrderMapper.toDomain);
+  }
+
+  async updateUserId(orderId: string, userId: string): Promise<void> {
+    await this.repository.update(orderId, { userId });
+  }
+
+  async updateUserIdForGuestEmail(guestEmail: string, userId: string): Promise<void> {
+    await this.repository.update({ guestEmail }, { userId });
+  }
 }

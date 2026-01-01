@@ -8,6 +8,8 @@ export class OrderMapper {
       entity.productId,
       entity.quantity,
       Number(entity.totalPrice),
+      entity.userId,
+      entity.guestEmail,
       entity.createdAt,
     );
   }
@@ -18,6 +20,8 @@ export class OrderMapper {
     entity.productId = domain.productId;
     entity.quantity = domain.quantity;
     entity.totalPrice = domain.totalPrice;
+    entity.userId = domain.userId;
+    entity.guestEmail = domain.guestEmail;
     return entity;
   }
 }

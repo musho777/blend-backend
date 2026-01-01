@@ -4,6 +4,8 @@ export class Order {
     public readonly productId: string,
     public readonly quantity: number,
     public readonly totalPrice: number,
+    public readonly userId?: string,
+    public readonly guestEmail?: string,
     public readonly createdAt?: Date,
   ) {}
 

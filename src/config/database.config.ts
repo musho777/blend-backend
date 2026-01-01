@@ -6,6 +6,8 @@ import { SubcategoryTypeormEntity } from '@infrastructure/database/entities/subc
 import { OrderTypeormEntity } from '@infrastructure/database/entities/order.typeorm-entity';
 import { AdminTypeormEntity } from '@infrastructure/database/entities/admin.typeorm-entity';
 import { BannerTypeormEntity } from '@infrastructure/database/entities/banner.typeorm-entity';
+import { UserTypeormEntity } from '@infrastructure/database/entities/user.typeorm-entity';
+import { VerificationCodeTypeormEntity } from '@infrastructure/database/entities/verification-code.typeorm-entity';
 
 export const getDatabaseConfig = (
   configService: ConfigService,
@@ -23,6 +25,8 @@ export const getDatabaseConfig = (
     OrderTypeormEntity,
     AdminTypeormEntity,
     BannerTypeormEntity,
+    UserTypeormEntity,
+    VerificationCodeTypeormEntity,
   ],
   synchronize: true, // Set to false in production and use migrations
   logging: configService.get<string>('NODE_ENV') === 'development',
