@@ -68,6 +68,18 @@ export class ProductRepository implements IProductRepository {
     return entities.map(ProductMapper.toDomain);
   }
 
+  async findByCategoryIdPaginated(categoryId: string, options: PaginationOptions): Promise<PaginatedResult<Product>> {
+    const [entities, total] = await this.repository.findAndCount({
+      where: { categoryId },
+      order: { priority: 'DESC', createdAt: 'DESC' },
+      skip: options.skip,
+      take: options.limit,
+    });
+
+    const data = entities.map(ProductMapper.toDomain);
+    return { data, total };
+  }
+
   async create(product: Product): Promise<Product> {
     const entity = ProductMapper.toTypeorm(product);
     const saved = await this.repository.save(entity);

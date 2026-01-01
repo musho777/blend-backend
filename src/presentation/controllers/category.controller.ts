@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -19,6 +20,7 @@ import {
   ApiParam,
   ApiConsumes,
   ApiBody,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import * as multer from "multer";
@@ -36,7 +38,10 @@ import { DeleteCategoryUseCase } from "@application/use-cases/category/delete-ca
 import { GetCategoriesUseCase } from "@application/use-cases/category/get-categories.use-case";
 import { GetCategoryByIdUseCase } from "@application/use-cases/category/get-category-by-id.use-case";
 import { GetSubcategoriesByCategoryIdUseCase } from "@application/use-cases/subcategory/get-subcategories-by-category-id.use-case";
+import { GetProductsByCategoryUseCase } from "@application/use-cases/product/get-products-by-category.use-case";
 import { SubcategoryResponseDto } from "../dtos/subcategory/subcategory-response.dto";
+import { ProductResponseDto } from "../dtos/product/product-response.dto";
+import { PaginationDto, PaginatedResponseDto } from "../dtos/common/pagination.dto";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -70,6 +75,7 @@ export class CategoryController {
     private readonly getCategoriesUseCase: GetCategoriesUseCase,
     private readonly getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private readonly getSubcategoriesByCategoryIdUseCase: GetSubcategoriesByCategoryIdUseCase,
+    private readonly getProductsByCategoryUseCase: GetProductsByCategoryUseCase,
     private readonly imageOptimizationService: ImageOptimizationService
   ) {}
 
@@ -244,5 +250,69 @@ export class CategoryController {
   async getSubcategories(@Param("id") id: string): Promise<SubcategoryResponseDto[]> {
     const subcategories = await this.getSubcategoriesByCategoryIdUseCase.execute(id);
     return SubcategoryResponseDto.fromDomainArray(subcategories);
+  }
+
+  @Get(":id/products")
+  @ApiOperation({ summary: "Get all products for a specific category with optional pagination" })
+  @ApiParam({ name: "id", description: "Category UUID" })
+  @ApiQuery({
+    name: "page",
+    required: false,
+    description: "Page number (starting from 1)",
+    example: 1,
+  })
+  @ApiQuery({
+    name: "limit",
+    required: false,
+    description: "Number of products per page (max 100)",
+    example: 10,
+  })
+  @ApiResponse({
+    status: 200,
+    description: "List of products belonging to the category with pagination metadata",
+    schema: {
+      type: "object",
+      properties: {
+        data: {
+          type: "array",
+          items: { $ref: "#/components/schemas/ProductResponseDto" },
+        },
+        meta: {
+          type: "object",
+          properties: {
+            page: { type: "number", example: 1 },
+            limit: { type: "number", example: 10 },
+            total: { type: "number", example: 50 },
+            pages: { type: "number", example: 5 },
+            hasNext: { type: "boolean", example: true },
+            hasPrevious: { type: "boolean", example: false },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: "Category not found" })
+  async getProducts(
+    @Param("id") id: string,
+    @Query() paginationDto: PaginationDto
+  ): Promise<PaginatedResponseDto<ProductResponseDto>> {
+    const page = paginationDto.page || 1;
+    const limit = paginationDto.limit || 10;
+    const skip = paginationDto.skip;
+
+    const result = await this.getProductsByCategoryUseCase.executePaginated(id, {
+      page,
+      limit,
+      skip,
+    });
+
+    const productDtos = ProductResponseDto.fromDomainArray(result.data);
+
+    return PaginatedResponseDto.create(
+      productDtos,
+      result.total,
+      page,
+      limit
+    );
   }
 }

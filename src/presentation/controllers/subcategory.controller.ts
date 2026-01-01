@@ -27,9 +27,7 @@ import { GetSubcategoryByIdUseCase } from '@application/use-cases/subcategory/ge
 import { GetSubcategoriesByCategoryIdUseCase } from '@application/use-cases/subcategory/get-subcategories-by-category-id.use-case';
 
 @ApiTags('Subcategories')
-@ApiBearerAuth('JWT-auth')
 @Controller('subcategories')
-@UseGuards(JwtAuthGuard)
 export class SubcategoryController {
   constructor(
     private readonly createSubcategoryUseCase: CreateSubcategoryUseCase,
@@ -67,6 +65,8 @@ export class SubcategoryController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Create new subcategory' })
   @ApiResponse({
     status: 201,
@@ -83,6 +83,8 @@ export class SubcategoryController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Update subcategory' })
   @ApiParam({ name: 'id', description: 'Subcategory UUID' })
   @ApiResponse({
@@ -100,6 +102,8 @@ export class SubcategoryController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Delete subcategory' })
   @ApiParam({ name: 'id', description: 'Subcategory UUID' })
   @ApiResponse({ status: 200, description: 'Subcategory deleted' })

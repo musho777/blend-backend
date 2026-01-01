@@ -19,6 +19,7 @@ export interface IProductRepository {
   findBestSellers(): Promise<Product[]>;
   findBestSelect(): Promise<Product[]>;
   findByCategoryId(categoryId: string): Promise<Product[]>;
+  findByCategoryIdPaginated(categoryId: string, options: PaginationOptions): Promise<PaginatedResult<Product>>;
   create(product: Product): Promise<Product>;
   update(id: string, product: Partial<Product>): Promise<Product>;
   delete(id: string): Promise<void>;

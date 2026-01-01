@@ -9,13 +9,16 @@ import { UpdateProductUseCase } from '@application/use-cases/product/update-prod
 import { DeleteProductUseCase } from '@application/use-cases/product/delete-product.use-case';
 import { GetProductsUseCase } from '@application/use-cases/product/get-products.use-case';
 import { GetProductByIdUseCase } from '@application/use-cases/product/get-product-by-id.use-case';
+import { GetProductsByCategoryUseCase } from '@application/use-cases/product/get-products-by-category.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
 import { SubcategoryModule } from './subcategory.module';
+import { CategoryModule } from './category.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductTypeormEntity]),
     forwardRef(() => SubcategoryModule),
+    forwardRef(() => CategoryModule),
   ],
   controllers: [ProductController],
   providers: [
@@ -28,8 +31,9 @@ import { SubcategoryModule } from './subcategory.module';
     DeleteProductUseCase,
     GetProductsUseCase,
     GetProductByIdUseCase,
+    GetProductsByCategoryUseCase,
     ImageOptimizationService,
   ],
-  exports: [PRODUCT_REPOSITORY],
+  exports: [PRODUCT_REPOSITORY, GetProductsByCategoryUseCase],
 })
 export class ProductModule {}
