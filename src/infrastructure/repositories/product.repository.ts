@@ -1,28 +1,34 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { IProductRepository, PaginationOptions, PaginatedResult } from '@domain/repositories/product.repository.interface';
-import { Product } from '@domain/entities/product.entity';
-import { ProductTypeormEntity } from '../database/entities/product.typeorm-entity';
-import { ProductMapper } from '../database/mappers/product.mapper';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  IProductRepository,
+  PaginationOptions,
+  PaginatedResult,
+} from "@domain/repositories/product.repository.interface";
+import { Product } from "@domain/entities/product.entity";
+import { ProductTypeormEntity } from "../database/entities/product.typeorm-entity";
+import { ProductMapper } from "../database/mappers/product.mapper";
 
 @Injectable()
 export class ProductRepository implements IProductRepository {
   constructor(
     @InjectRepository(ProductTypeormEntity)
-    private readonly repository: Repository<ProductTypeormEntity>,
+    private readonly repository: Repository<ProductTypeormEntity>
   ) {}
 
   async findAll(): Promise<Product[]> {
     const entities = await this.repository.find({
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
   }
 
-  async findAllPaginated(options: PaginationOptions): Promise<PaginatedResult<Product>> {
+  async findAllPaginated(
+    options: PaginationOptions
+  ): Promise<PaginatedResult<Product>> {
     const [entities, total] = await this.repository.findAndCount({
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
       skip: options.skip,
       take: options.limit,
     });
@@ -39,7 +45,7 @@ export class ProductRepository implements IProductRepository {
   async findFeatured(): Promise<Product[]> {
     const entities = await this.repository.find({
       where: { isFeatured: true },
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
   }
@@ -47,7 +53,7 @@ export class ProductRepository implements IProductRepository {
   async findBestSellers(): Promise<Product[]> {
     const entities = await this.repository.find({
       where: { isBestSeller: true },
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
   }
@@ -55,7 +61,7 @@ export class ProductRepository implements IProductRepository {
   async findBestSelect(): Promise<Product[]> {
     const entities = await this.repository.find({
       where: { isBestSelect: true },
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
   }
@@ -63,15 +69,25 @@ export class ProductRepository implements IProductRepository {
   async findByCategoryId(categoryId: string): Promise<Product[]> {
     const entities = await this.repository.find({
       where: { categoryId },
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
   }
 
-  async findByCategoryIdPaginated(categoryId: string, options: PaginationOptions): Promise<PaginatedResult<Product>> {
+  async findByCategoryIdPaginated(
+    categoryId: string,
+    options: PaginationOptions,
+    subcategoryId?: string
+  ): Promise<PaginatedResult<Product>> {
+    const where: any = { categoryId };
+    console.log("fdkjf");
+    if (subcategoryId) {
+      where.subcategoryId = subcategoryId;
+    }
+
     const [entities, total] = await this.repository.findAndCount({
-      where: { categoryId },
-      order: { priority: 'DESC', createdAt: 'DESC' },
+      where,
+      order: { priority: "DESC", createdAt: "DESC" },
       skip: options.skip,
       take: options.limit,
     });
@@ -91,7 +107,7 @@ export class ProductRepository implements IProductRepository {
     await this.repository.update(id, entity);
     const updated = await this.repository.findOne({ where: { id } });
     if (!updated) {
-      throw new Error('Product not found after update');
+      throw new Error("Product not found after update");
     }
     return ProductMapper.toDomain(updated);
   }

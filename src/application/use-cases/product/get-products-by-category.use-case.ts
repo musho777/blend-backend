@@ -1,7 +1,15 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { IProductRepository, PRODUCT_REPOSITORY, PaginationOptions, PaginatedResult } from '@domain/repositories/product.repository.interface';
-import { ICategoryRepository, CATEGORY_REPOSITORY } from '@domain/repositories/category.repository.interface';
-import { Product } from '@domain/entities/product.entity';
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  IProductRepository,
+  PRODUCT_REPOSITORY,
+  PaginationOptions,
+  PaginatedResult,
+} from "@domain/repositories/product.repository.interface";
+import {
+  ICategoryRepository,
+  CATEGORY_REPOSITORY,
+} from "@domain/repositories/category.repository.interface";
+import { Product } from "@domain/entities/product.entity";
 
 @Injectable()
 export class GetProductsByCategoryUseCase {
@@ -9,7 +17,7 @@ export class GetProductsByCategoryUseCase {
     @Inject(PRODUCT_REPOSITORY)
     private readonly productRepository: IProductRepository,
     @Inject(CATEGORY_REPOSITORY)
-    private readonly categoryRepository: ICategoryRepository,
+    private readonly categoryRepository: ICategoryRepository
   ) {}
 
   async execute(categoryId: string): Promise<Product[]> {
@@ -17,9 +25,17 @@ export class GetProductsByCategoryUseCase {
     return await this.productRepository.findByCategoryId(categoryId);
   }
 
-  async executePaginated(categoryId: string, options: PaginationOptions): Promise<PaginatedResult<Product>> {
+  async executePaginated(
+    categoryId: string,
+    options: PaginationOptions,
+    subcategoryId?: string
+  ): Promise<PaginatedResult<Product>> {
     await this.validateCategory(categoryId);
-    return await this.productRepository.findByCategoryIdPaginated(categoryId, options);
+    return await this.productRepository.findByCategoryIdPaginated(
+      categoryId,
+      options,
+      subcategoryId
+    );
   }
 
   private async validateCategory(categoryId: string): Promise<void> {

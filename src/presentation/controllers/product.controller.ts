@@ -31,7 +31,10 @@ import { ImageOptimizationService } from "@common/services/image-optimization.se
 import { CreateProductDto } from "../dtos/product/create-product.dto";
 import { UpdateProductDto } from "../dtos/product/update-product.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
-import { PaginationDto, PaginatedResponseDto } from "../dtos/common/pagination.dto";
+import {
+  PaginationDto,
+  PaginatedResponseDto,
+} from "../dtos/common/pagination.dto";
 import { CreateProductUseCase } from "@application/use-cases/product/create-product.use-case";
 import { UpdateProductUseCase } from "@application/use-cases/product/update-product.use-case";
 import { DeleteProductUseCase } from "@application/use-cases/product/delete-product.use-case";
@@ -119,21 +122,15 @@ export class ProductController {
     const page = paginationDto.page || 1;
     const limit = paginationDto.limit || 10;
     const skip = paginationDto.skip;
-    
     const result = await this.getProductsUseCase.executePaginated({
       page,
       limit,
       skip,
     });
-    
+
     const productDtos = ProductResponseDto.fromDomainArray(result.data);
-    
-    return PaginatedResponseDto.create(
-      productDtos,
-      result.total,
-      page,
-      limit
-    );
+
+    return PaginatedResponseDto.create(productDtos, result.total, page, limit);
   }
 
   @Get(":id")
@@ -199,20 +196,21 @@ export class ProductController {
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
       const tempPaths = files.map((file) => file.path);
-      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
-        tempPaths,
-        "./uploads/products",
-        {
-          preset: "large",
-          quality: 80,
-          convertToWebP: true,
-          removeMetadata: true,
-          preserveAspectRatio: true,
-        }
-      );
+      const optimizedPaths =
+        await this.imageOptimizationService.optimizeMultipleImages(
+          tempPaths,
+          "./uploads/products",
+          {
+            preset: "large",
+            quality: 80,
+            convertToWebP: true,
+            removeMetadata: true,
+            preserveAspectRatio: true,
+          }
+        );
 
-      createProductDto.imageUrls = optimizedPaths.map(
-        (filePath) => filePath.replace("./uploads", "/uploads")
+      createProductDto.imageUrls = optimizedPaths.map((filePath) =>
+        filePath.replace("./uploads", "/uploads")
       );
     }
 
@@ -232,7 +230,8 @@ export class ProductController {
   @ApiParam({ name: "id", description: "Product UUID" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    description: "Product data with optional images (up to 10 files). New images will be added to existing ones.",
+    description:
+      "Product data with optional images (up to 10 files). New images will be added to existing ones.",
     schema: {
       type: "object",
       properties: {
@@ -251,12 +250,13 @@ export class ProductController {
           type: "array",
           items: { type: "string" },
           description: "Image URLs to remove from product",
-          example: ["/uploads/products/old-image.png"]
+          example: ["/uploads/products/old-image.png"],
         },
         images: {
           type: "array",
           items: { type: "string", format: "binary" },
-          description: "Product image files (max 10) - will be added to existing images",
+          description:
+            "Product image files (max 10) - will be added to existing images",
           maxItems: 10,
         },
       },
@@ -275,22 +275,23 @@ export class ProductController {
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
       const tempPaths = files.map((file) => file.path);
-      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
-        tempPaths,
-        "./uploads/products",
-        {
-          preset: "large",
-          quality: 80,
-          convertToWebP: true,
-          removeMetadata: true,
-          preserveAspectRatio: true,
-        }
+      const optimizedPaths =
+        await this.imageOptimizationService.optimizeMultipleImages(
+          tempPaths,
+          "./uploads/products",
+          {
+            preset: "large",
+            quality: 80,
+            convertToWebP: true,
+            removeMetadata: true,
+            preserveAspectRatio: true,
+          }
+        );
+
+      const newImageUrls = optimizedPaths.map((filePath) =>
+        filePath.replace("./uploads", "/uploads")
       );
 
-      const newImageUrls = optimizedPaths.map(
-        (filePath) => filePath.replace("./uploads", "/uploads")
-      );
-      
       if (!updateProductDto.imageUrls) {
         updateProductDto.imageUrls = [];
       }

@@ -32,6 +32,7 @@ import { FileUploadValidationPipe } from "@common/pipes/file-upload-validation.p
 import { CreateCategoryDto } from "../dtos/category/create-category.dto";
 import { UpdateCategoryDto } from "../dtos/category/update-category.dto";
 import { CategoryResponseDto } from "../dtos/category/category-response.dto";
+import { GetProductsByCategoryQueryDto } from "../dtos/category/get-products-by-category-query.dto";
 import { CreateCategoryUseCase } from "@application/use-cases/category/create-category.use-case";
 import { UpdateCategoryUseCase } from "@application/use-cases/category/update-category.use-case";
 import { DeleteCategoryUseCase } from "@application/use-cases/category/delete-category.use-case";
@@ -41,7 +42,10 @@ import { GetSubcategoriesByCategoryIdUseCase } from "@application/use-cases/subc
 import { GetProductsByCategoryUseCase } from "@application/use-cases/product/get-products-by-category.use-case";
 import { SubcategoryResponseDto } from "../dtos/subcategory/subcategory-response.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
-import { PaginationDto, PaginatedResponseDto } from "../dtos/common/pagination.dto";
+import {
+  PaginationDto,
+  PaginatedResponseDto,
+} from "../dtos/common/pagination.dto";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -144,19 +148,23 @@ export class CategoryController {
     @UploadedFile() file?: Express.Multer.File
   ): Promise<CategoryResponseDto> {
     if (file) {
-      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
-        [file.path],
-        "./uploads/categories",
-        {
-          preset: "medium",
-          quality: 85,
-          convertToWebP: true,
-          removeMetadata: true,
-          preserveAspectRatio: true,
-        }
-      );
+      const optimizedPaths =
+        await this.imageOptimizationService.optimizeMultipleImages(
+          [file.path],
+          "./uploads/categories",
+          {
+            preset: "medium",
+            quality: 85,
+            convertToWebP: true,
+            removeMetadata: true,
+            preserveAspectRatio: true,
+          }
+        );
 
-      createCategoryDto.image = optimizedPaths[0].replace("./uploads", "/uploads");
+      createCategoryDto.image = optimizedPaths[0].replace(
+        "./uploads",
+        "/uploads"
+      );
     }
 
     const category = await this.createCategoryUseCase.execute(
@@ -179,7 +187,8 @@ export class CategoryController {
   @ApiParam({ name: "id", description: "Category UUID" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
-    description: "Category data with optional image file to replace existing image",
+    description:
+      "Category data with optional image file to replace existing image",
     schema: {
       type: "object",
       properties: {
@@ -205,19 +214,23 @@ export class CategoryController {
     @UploadedFile() file?: Express.Multer.File
   ): Promise<CategoryResponseDto> {
     if (file) {
-      const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
-        [file.path],
-        "./uploads/categories",
-        {
-          preset: "medium",
-          quality: 85,
-          convertToWebP: true,
-          removeMetadata: true,
-          preserveAspectRatio: true,
-        }
-      );
+      const optimizedPaths =
+        await this.imageOptimizationService.optimizeMultipleImages(
+          [file.path],
+          "./uploads/categories",
+          {
+            preset: "medium",
+            quality: 85,
+            convertToWebP: true,
+            removeMetadata: true,
+            preserveAspectRatio: true,
+          }
+        );
 
-      updateCategoryDto.image = optimizedPaths[0].replace("./uploads", "/uploads");
+      updateCategoryDto.image = optimizedPaths[0].replace(
+        "./uploads",
+        "/uploads"
+      );
     }
 
     const category = await this.updateCategoryUseCase.execute(
@@ -247,29 +260,24 @@ export class CategoryController {
     description: "List of subcategories belonging to the category",
     type: [SubcategoryResponseDto],
   })
-  async getSubcategories(@Param("id") id: string): Promise<SubcategoryResponseDto[]> {
-    const subcategories = await this.getSubcategoriesByCategoryIdUseCase.execute(id);
+  async getSubcategories(
+    @Param("id") id: string
+  ): Promise<SubcategoryResponseDto[]> {
+    const subcategories =
+      await this.getSubcategoriesByCategoryIdUseCase.execute(id);
     return SubcategoryResponseDto.fromDomainArray(subcategories);
   }
 
   @Get(":id/products")
-  @ApiOperation({ summary: "Get all products for a specific category with optional pagination" })
+  @ApiOperation({
+    summary:
+      "Get all products for a specific category with optional pagination and subcategory filter",
+  })
   @ApiParam({ name: "id", description: "Category UUID" })
-  @ApiQuery({
-    name: "page",
-    required: false,
-    description: "Page number (starting from 1)",
-    example: 1,
-  })
-  @ApiQuery({
-    name: "limit",
-    required: false,
-    description: "Number of products per page (max 100)",
-    example: 10,
-  })
   @ApiResponse({
     status: 200,
-    description: "List of products belonging to the category with pagination metadata",
+    description:
+      "List of products belonging to the category with pagination metadata",
     schema: {
       type: "object",
       properties: {
@@ -294,25 +302,24 @@ export class CategoryController {
   @ApiResponse({ status: 404, description: "Category not found" })
   async getProducts(
     @Param("id") id: string,
-    @Query() paginationDto: PaginationDto
+    @Query() queryDto: GetProductsByCategoryQueryDto
   ): Promise<PaginatedResponseDto<ProductResponseDto>> {
-    const page = paginationDto.page || 1;
-    const limit = paginationDto.limit || 10;
-    const skip = paginationDto.skip;
-
-    const result = await this.getProductsByCategoryUseCase.executePaginated(id, {
-      page,
-      limit,
-      skip,
-    });
+    const page = queryDto.page || 1;
+    const limit = queryDto.limit || 10;
+    const skip = queryDto.skip;
+    console.log(queryDto.subcategoryId);
+    const result = await this.getProductsByCategoryUseCase.executePaginated(
+      id,
+      {
+        page,
+        limit,
+        skip,
+      },
+      queryDto.subcategoryId
+    );
 
     const productDtos = ProductResponseDto.fromDomainArray(result.data);
 
-    return PaginatedResponseDto.create(
-      productDtos,
-      result.total,
-      page,
-      limit
-    );
+    return PaginatedResponseDto.create(productDtos, result.total, page, limit);
   }
 }
