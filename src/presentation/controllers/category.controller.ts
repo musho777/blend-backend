@@ -61,9 +61,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
 };
 
 @ApiTags("Categories")
-@ApiBearerAuth("JWT-auth")
 @Controller("categories")
-@UseGuards(JwtAuthGuard)
 export class CategoryController {
   constructor(
     private readonly createCategoryUseCase: CreateCategoryUseCase,
@@ -102,6 +100,8 @@ export class CategoryController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @UseInterceptors(
     FileInterceptor("image", {
       storage,
@@ -160,6 +160,8 @@ export class CategoryController {
   }
 
   @Put(":id")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @UseInterceptors(
     FileInterceptor("image", {
       storage,
@@ -220,6 +222,8 @@ export class CategoryController {
   }
 
   @Delete(":id")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Delete category" })
   @ApiParam({ name: "id", description: "Category UUID" })
   @ApiResponse({ status: 200, description: "Category deleted" })
