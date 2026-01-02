@@ -59,9 +59,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
 };
 
 @ApiTags('Banners')
-@ApiBearerAuth('JWT-auth')
 @Controller('banners')
-@UseGuards(JwtAuthGuard)
 export class BannerController {
   constructor(
     private readonly createBannerUseCase: CreateBannerUseCase,
@@ -73,7 +71,7 @@ export class BannerController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all banners (Admin)', description: 'Returns all banners including inactive ones, sorted by priority ASC (lowest priority number appears first)' })
+  @ApiOperation({ summary: 'Get all banners', description: 'Returns all banners including inactive ones, sorted by priority ASC (lowest priority number appears first)' })
   @ApiResponse({
     status: 200,
     description: 'List of all banners sorted by priority',
@@ -85,7 +83,7 @@ export class BannerController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get banner by ID (Admin)' })
+  @ApiOperation({ summary: 'Get banner by ID' })
   @ApiParam({ name: 'id', description: 'Banner UUID' })
   @ApiResponse({
     status: 200,
@@ -99,6 +97,8 @@ export class BannerController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @UseInterceptors(
     FileInterceptor('image', {
       storage,
@@ -159,6 +159,8 @@ export class BannerController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @UseInterceptors(
     FileInterceptor('image', {
       storage,
@@ -218,6 +220,8 @@ export class BannerController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Delete banner (Admin)' })
   @ApiParam({ name: 'id', description: 'Banner UUID' })
   @ApiResponse({ status: 200, description: 'Banner deleted' })
