@@ -12,6 +12,7 @@ export class Product {
     public isBestSeller: boolean = false,
     public isBestSelect: boolean = false,
     public priority: number = 0,
+    public disabled: boolean = false,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date
   ) {}
@@ -62,5 +63,13 @@ export class Product {
 
   updatePriority(priority: number): void {
     this.priority = priority;
+  }
+
+  disable(): void {
+    this.disabled = true;
+  }
+
+  enable(): void {
+    this.disabled = false;
   }
 }

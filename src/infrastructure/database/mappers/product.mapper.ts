@@ -16,6 +16,7 @@ export class ProductMapper {
       entity.isBestSeller,
       entity.isBestSelect,
       entity.priority,
+      entity.disabled,
       entity.createdAt,
       entity.updatedAt,
     );
@@ -35,6 +36,7 @@ export class ProductMapper {
     entity.isBestSeller = domain.isBestSeller;
     entity.isBestSelect = domain.isBestSelect;
     entity.priority = domain.priority;
+    entity.disabled = domain.disabled;
     return entity;
   }
 
@@ -48,9 +50,10 @@ export class ProductMapper {
     if (domain.description !== undefined) entity.description = domain.description;
     if (domain.imageUrls !== undefined) entity.imageUrls = domain.imageUrls;
     if (domain.isFeatured !== undefined) entity.isFeatured = domain.isFeatured;
-    if (domain.isBestSeller !== undefined) entity.isBestSeller = domain.isBestSeller;
+    if (domain.isBestSeller !== undefined) entity.isBestSeller = domain.isBestSelect;
     if (domain.isBestSelect !== undefined) entity.isBestSelect = domain.isBestSelect;
     if (domain.priority !== undefined) entity.priority = domain.priority;
+    if (domain.disabled !== undefined) entity.disabled = domain.disabled;
     return entity;
   }
 }

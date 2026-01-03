@@ -47,6 +47,9 @@ export class ProductResponseDto {
   @ApiProperty({ example: 10 })
   priority: number;
 
+  @ApiProperty({ example: false })
+  disabled: boolean;
+
   @ApiProperty({ example: "2024-01-01T00:00:00.000Z", required: false })
   createdAt?: Date;
 
@@ -67,6 +70,7 @@ export class ProductResponseDto {
       isBestSeller: product.isBestSeller,
       isBestSelect: product.isBestSelect,
       priority: product.priority,
+      disabled: product.disabled,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
     };

@@ -97,4 +97,14 @@ export class UpdateProductDto {
   @Type(() => Number)
   @IsNumber()
   priority?: number;
+
+  @ApiProperty({ example: false, description: 'Is product disabled (hidden from public)', required: false })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return Boolean(value);
+  })
+  @IsBoolean()
+  disabled?: boolean;
 }

@@ -52,7 +52,7 @@ export class ProductRepository implements IProductRepository {
 
   async findBestSellers(): Promise<Product[]> {
     const entities = await this.repository.find({
-      where: { isBestSeller: true },
+      where: { isBestSeller: true, disabled: false },
       order: { priority: "DESC", createdAt: "DESC" },
     });
     return entities.map(ProductMapper.toDomain);
@@ -79,7 +79,7 @@ export class ProductRepository implements IProductRepository {
     options: PaginationOptions,
     subcategoryId?: string
   ): Promise<PaginatedResult<Product>> {
-    const where: any = { categoryId };
+    const where: any = { categoryId, disabled: false };
     console.log("fdkjf");
     if (subcategoryId) {
       where.subcategoryId = subcategoryId;

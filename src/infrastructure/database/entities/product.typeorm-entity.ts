@@ -40,6 +40,9 @@ export class ProductTypeormEntity {
   @Column('int', { default: 0 })
   priority: number;
 
+  @Column({ default: false })
+  disabled: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
