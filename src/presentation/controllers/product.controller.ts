@@ -65,9 +65,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
 };
 
 @ApiTags("Products")
-@ApiBearerAuth("JWT-auth")
 @Controller("products")
-@UseGuards(JwtAuthGuard)
 export class ProductController {
   constructor(
     private readonly createProductUseCase: CreateProductUseCase,
@@ -149,6 +147,8 @@ export class ProductController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @UseInterceptors(
     FilesInterceptor("images", 10, {
       storage,
@@ -219,6 +219,8 @@ export class ProductController {
   }
 
   @Put(":id")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @UseInterceptors(
     FilesInterceptor("images", 10, {
       storage,
@@ -306,6 +308,8 @@ export class ProductController {
   }
 
   @Delete(":id")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Delete product" })
   @ApiParam({ name: "id", description: "Product UUID" })
   @ApiResponse({ status: 200, description: "Product deleted" })

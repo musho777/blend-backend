@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IOrderRepository } from '@domain/repositories/order.repository.interface';
-import { Order } from '@domain/entities/order.entity';
+import { Order, OrderStatus } from '@domain/entities/order.entity';
 import { OrderTypeormEntity } from '../database/entities/order.typeorm-entity';
 import { OrderMapper } from '../database/mappers/order.mapper';
 
@@ -16,19 +16,24 @@ export class OrderRepository implements IOrderRepository {
   async findAll(): Promise<Order[]> {
     const entities = await this.repository.find({
       order: { createdAt: 'DESC' },
+      relations: ['items'],
     });
     return entities.map(OrderMapper.toDomain);
   }
 
-  async findById(id: string): Promise<Order | null> {
-    const entity = await this.repository.findOne({ where: { id } });
+  async findById(id: number): Promise<Order | null> {
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: ['items'],
+    });
     return entity ? OrderMapper.toDomain(entity) : null;
   }
 
-  async findByProductId(productId: string): Promise<Order[]> {
+  async findByUserId(userId: string): Promise<Order[]> {
     const entities = await this.repository.find({
-      where: { productId },
+      where: { userId },
       order: { createdAt: 'DESC' },
+      relations: ['items'],
     });
     return entities.map(OrderMapper.toDomain);
   }
@@ -39,27 +44,11 @@ export class OrderRepository implements IOrderRepository {
     return OrderMapper.toDomain(saved);
   }
 
-  async findByUserId(userId: string): Promise<Order[]> {
-    const entities = await this.repository.find({
-      where: { userId },
-      order: { createdAt: 'DESC' },
-    });
-    return entities.map(OrderMapper.toDomain);
+  async updateStatus(orderId: number, status: OrderStatus): Promise<void> {
+    await this.repository.update(orderId, { status });
   }
 
-  async findByGuestEmail(guestEmail: string): Promise<Order[]> {
-    const entities = await this.repository.find({
-      where: { guestEmail },
-      order: { createdAt: 'DESC' },
-    });
-    return entities.map(OrderMapper.toDomain);
-  }
-
-  async updateUserId(orderId: string, userId: string): Promise<void> {
-    await this.repository.update(orderId, { userId });
-  }
-
-  async updateUserIdForGuestEmail(guestEmail: string, userId: string): Promise<void> {
-    await this.repository.update({ guestEmail }, { userId });
+  async delete(orderId: number): Promise<void> {
+    await this.repository.delete(orderId);
   }
 }

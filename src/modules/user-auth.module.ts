@@ -15,7 +15,7 @@ import { ORDER_REPOSITORY } from '@domain/repositories/order.repository.interfac
 import { UserJwtStrategy } from '@auth/strategies/user-jwt.strategy';
 import { GoogleStrategy } from '@auth/strategies/google.strategy';
 import { UserAuthController } from '@presentation/controllers/user-auth.controller';
-import { PublicOrderController } from '@presentation/controllers/public-order.controller';
+import { PublicOrderController } from '@presentation/controllers/order.controller';
 import { RegisterUserUseCase } from '@application/use-cases/user-auth/register-user.use-case';
 import { VerifyEmailUseCase } from '@application/use-cases/user-auth/verify-email.use-case';
 import { ResendVerificationCodeUseCase } from '@application/use-cases/user-auth/resend-verification-code.use-case';

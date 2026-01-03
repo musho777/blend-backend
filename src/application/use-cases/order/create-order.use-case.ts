@@ -1,14 +1,24 @@
 import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { IOrderRepository, ORDER_REPOSITORY } from '@domain/repositories/order.repository.interface';
 import { IProductRepository, PRODUCT_REPOSITORY } from '@domain/repositories/product.repository.interface';
-import { Order } from '@domain/entities/order.entity';
+import { Order, OrderStatus, PaymentMethod, OrderItem } from '@domain/entities/order.entity';
 import { v4 as uuidv4 } from 'uuid';
 
-export interface CreateOrderInput {
+export interface CreateOrderItemInput {
   productId: string;
   quantity: number;
+  price: number;
+  name: string;
+}
+
+export interface CreateOrderInput {
+  customerName: string;
+  customerSurname: string;
+  customerAddress: string;
+  customerPhone: string;
+  items: CreateOrderItemInput[];
+  paymentMethod: string;
   userId?: string;
-  guestEmail?: string;
 }
 
 @Injectable()
@@ -21,30 +31,49 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute(input: CreateOrderInput): Promise<Order> {
-    const { productId, quantity, userId, guestEmail } = input;
+    const { customerName, customerSurname, customerAddress, customerPhone, items, paymentMethod, userId } = input;
 
-    if (!userId && !guestEmail) {
-      throw new BadRequestException('Either userId or guestEmail must be provided');
+    if (!items || items.length === 0) {
+      throw new BadRequestException('Order must contain at least one item');
     }
 
-    const product = await this.productRepository.findById(productId);
-    if (!product) {
-      throw new NotFoundException('Product not found');
+    const orderItems: OrderItem[] = [];
+    for (const item of items) {
+      const product = await this.productRepository.findById(item.productId);
+      if (!product) {
+        throw new NotFoundException(`Product ${item.productId} not found`);
+      }
+
+      if (product.stock < item.quantity) {
+        throw new BadRequestException(`Insufficient stock for product ${product.title}`);
+      }
+
+      orderItems.push(
+        new OrderItem(
+          uuidv4(),
+          0,
+          item.productId,
+          item.quantity,
+          item.price,
+          item.name,
+        ),
+      );
     }
 
-    if (product.stock < quantity) {
-      throw new BadRequestException('Insufficient stock');
-    }
-
-    const totalPrice = Order.calculateTotalPrice(product.price, quantity);
+    const totalPrice = Order.calculateTotalPrice(orderItems);
 
     const order = new Order(
-      uuidv4(),
-      productId,
-      quantity,
+      0,
+      customerName,
+      customerSurname,
+      customerAddress,
+      customerPhone,
+      paymentMethod as PaymentMethod,
       totalPrice,
+      OrderStatus.PENDING,
+      orderItems,
       userId,
-      guestEmail,
+      new Date(),
       new Date(),
     );
 

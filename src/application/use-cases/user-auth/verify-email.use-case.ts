@@ -57,8 +57,6 @@ export class VerifyEmailUseCase {
 
     await this.userRepository.update(user.id, { isVerified: true });
 
-    await this.orderRepository.updateUserIdForGuestEmail(email, user.id);
-
     await this.verificationCodeRepository.deleteByUserId(user.id);
 
     await this.emailService.sendWelcomeEmail(email, user.firstName);

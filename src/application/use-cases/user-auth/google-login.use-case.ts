@@ -61,8 +61,6 @@ export class GoogleLoginUseCase {
         );
 
         user = await this.userRepository.create(newUser);
-
-        await this.orderRepository.updateUserIdForGuestEmail(email, user.id);
       }
     }
 

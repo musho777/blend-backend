@@ -11,6 +11,7 @@ import { CategoryModule } from './modules/category.module';
 import { SubcategoryModule } from './modules/subcategory.module';
 import { BannerModule } from './modules/banner.module';
 import { HomeModule } from './modules/home.module';
+import { OrderModule } from './modules/order.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { HomeModule } from './modules/home.module';
     SubcategoryModule,
     BannerModule,
     HomeModule,
+    OrderModule,
   ],
   providers: [
     {

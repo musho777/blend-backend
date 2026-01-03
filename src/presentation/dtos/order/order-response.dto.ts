@@ -1,88 +1,64 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { OrderStatus } from './update-order-status.dto';
+import { Order, OrderStatus, PaymentMethod, OrderItem } from '@domain/entities/order.entity';
 
 export class OrderItemResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Product UUID' })
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Item ID' })
+  id: string;
+
+  @ApiProperty({ example: 'd0264a72-ad1b-47f8-861a-df80d64b8e5a', description: 'Product ID' })
   productId: string;
 
-  @ApiProperty({ example: 'iPhone 15 Pro', description: 'Product title' })
-  productTitle: string;
+  @ApiProperty({ example: 'New Product', description: 'Product name' })
+  name: string;
 
-  @ApiProperty({ example: 999.99, description: 'Product price at time of order' })
+  @ApiProperty({ example: 10, description: 'Product price' })
   price: number;
 
-  @ApiProperty({ example: 2, description: 'Quantity ordered' })
+  @ApiProperty({ example: 2, description: 'Quantity' })
   quantity: number;
 
-  @ApiProperty({ example: 1999.98, description: 'Total price for this item' })
-  totalPrice: number;
+  @ApiProperty({ example: 20, description: 'Subtotal for this item' })
+  subtotal: number;
+
+  static fromDomain(item: OrderItem): OrderItemResponseDto {
+    return {
+      id: item.id,
+      productId: item.productId,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      subtotal: item.subtotal,
+    };
+  }
 }
 
 export class OrderResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'Order UUID' })
-  id: string;
+  @ApiProperty({ example: 1, description: 'Order ID' })
+  id: number;
 
-  @ApiProperty({ example: 'ORD-2024-001', description: 'Human-readable order number' })
-  orderNumber: string;
-
-  @ApiProperty({ example: 'John Doe', description: 'Customer full name' })
+  @ApiProperty({ example: 'MUHSO', description: 'Customer first name' })
   customerName: string;
 
-  @ApiProperty({ example: 'john.doe@example.com', description: 'Customer email address' })
-  customerEmail: string;
+  @ApiProperty({ example: 'POGHOSYAN', description: 'Customer surname' })
+  customerSurname: string;
 
-  @ApiProperty({ example: '+1234567890', description: 'Customer phone number' })
+  @ApiProperty({ example: 'MOLDOVKAN 30/3', description: 'Customer address' })
+  customerAddress: string;
+
+  @ApiProperty({ example: '+37493613007', description: 'Customer phone' })
   customerPhone: string;
 
-  @ApiProperty({
-    description: 'Customer shipping address',
-    type: 'object',
-    properties: {
-      street: { type: 'string', example: '123 Main St' },
-      city: { type: 'string', example: 'New York' },
-      state: { type: 'string', example: 'NY' },
-      zipCode: { type: 'string', example: '10001' },
-      country: { type: 'string', example: 'USA' },
-    }
-  })
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-
-  @ApiProperty({
-    description: 'Ordered items',
-    type: [OrderItemResponseDto],
-  })
-  items: OrderItemResponseDto[];
-
-  @ApiProperty({ example: 2099.97, description: 'Subtotal before tax and shipping' })
-  subtotal: number;
-
-  @ApiProperty({ example: 199.99, description: 'Tax amount' })
-  tax: number;
-
-  @ApiProperty({ example: 9.99, description: 'Shipping cost' })
-  shippingCost: number;
-
-  @ApiProperty({ example: 2309.95, description: 'Total order amount' })
-  total: number;
-
-  @ApiProperty({
-    description: 'Order status',
-    enum: OrderStatus,
-    example: OrderStatus.PROCESSING,
-  })
-  status: OrderStatus;
-
-  @ApiProperty({ example: 'credit_card', description: 'Payment method used' })
+  @ApiProperty({ example: 'cash_on_delivery', description: 'Payment method', enum: PaymentMethod })
   paymentMethod: string;
 
-  @ApiProperty({ example: 'TRX123456789', description: 'Payment transaction ID' })
-  paymentTransactionId?: string;
+  @ApiProperty({ example: 100, description: 'Total order amount' })
+  totalPrice: number;
+
+  @ApiProperty({ example: 'pending', description: 'Order status', enum: OrderStatus })
+  status: string;
+
+  @ApiProperty({ type: [OrderItemResponseDto], description: 'Order items' })
+  items: OrderItemResponseDto[];
 
   @ApiProperty({ example: '2024-01-15T10:30:00Z', description: 'Order creation timestamp' })
   createdAt: string;
@@ -90,16 +66,23 @@ export class OrderResponseDto {
   @ApiProperty({ example: '2024-01-15T14:45:00Z', description: 'Last update timestamp' })
   updatedAt: string;
 
-  @ApiProperty({ example: '2024-01-16T09:00:00Z', description: 'Estimated delivery date', required: false })
-  estimatedDelivery?: string;
+  static fromDomain(order: Order): OrderResponseDto {
+    return {
+      id: order.id,
+      customerName: order.customerName,
+      customerSurname: order.customerSurname,
+      customerAddress: order.customerAddress,
+      customerPhone: order.customerPhone,
+      paymentMethod: order.paymentMethod,
+      totalPrice: order.totalPrice,
+      status: order.status,
+      items: order.items.map(item => OrderItemResponseDto.fromDomain(item)),
+      createdAt: order.createdAt?.toISOString() || new Date().toISOString(),
+      updatedAt: order.updatedAt?.toISOString() || new Date().toISOString(),
+    };
+  }
 
-  @ApiProperty({ example: 'TRK123456789', description: 'Shipping tracking number', required: false })
-  trackingNumber?: string;
-
-  @ApiProperty({ example: 'Order processed and shipped', description: 'Admin notes', required: false })
-  notes?: string;
-
-  // TODO: Add static methods for domain mapping when Order entity is available
-  // static fromDomain(order: Order): OrderResponseDto
-  // static fromDomainArray(orders: Order[]): OrderResponseDto[]
+  static fromDomainArray(orders: Order[]): OrderResponseDto[] {
+    return orders.map(order => this.fromDomain(order));
+  }
 }
