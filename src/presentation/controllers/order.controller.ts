@@ -286,6 +286,7 @@ export class PublicOrderController {
       customerSurname: createOrderDto.customer.surname,
       customerAddress: createOrderDto.customer.address,
       customerPhone: createOrderDto.customer.phone,
+      customerEmail: createOrderDto.customer.email,
       items: createOrderDto.items,
       paymentMethod: createOrderDto.paymentMethod,
       userId,

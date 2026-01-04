@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsNumber, Min, IsArray, IsEnum, ValidateNested, IsNotEmpty } from 'class-validator';
+import { IsString, IsInt, IsNumber, Min, IsArray, IsEnum, ValidateNested, IsNotEmpty, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -22,6 +22,11 @@ export class CustomerDto {
   @IsString()
   @IsNotEmpty()
   phone: string;
+
+  @ApiProperty({ example: 'customer@example.com', description: 'Customer email' })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 }
 
 export class OrderItemDto {

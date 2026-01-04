@@ -35,6 +35,7 @@ export class OrderMapper {
       entity.customerSurname,
       entity.customerAddress,
       entity.customerPhone,
+      entity.customerEmail || null,
       entity.paymentMethod as PaymentMethod,
       Number(entity.totalPrice),
       entity.status as OrderStatus,
@@ -52,6 +53,7 @@ export class OrderMapper {
     entity.customerSurname = domain.customerSurname;
     entity.customerAddress = domain.customerAddress;
     entity.customerPhone = domain.customerPhone;
+    entity.customerEmail = domain.customerEmail;
     entity.paymentMethod = domain.paymentMethod;
     entity.totalPrice = domain.totalPrice;
     entity.status = domain.status;

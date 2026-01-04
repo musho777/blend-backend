@@ -31,6 +31,7 @@ export class Order {
     public readonly customerSurname: string,
     public readonly customerAddress: string,
     public readonly customerPhone: string,
+    public readonly customerEmail: string | null,
     public readonly paymentMethod: PaymentMethod,
     public readonly totalPrice: number,
     public readonly status: OrderStatus,

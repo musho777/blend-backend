@@ -48,6 +48,9 @@ export class OrderResponseDto {
   @ApiProperty({ example: '+37493613007', description: 'Customer phone' })
   customerPhone: string;
 
+  @ApiProperty({ example: 'customer@example.com', description: 'Customer email', required: false, nullable: true })
+  customerEmail: string | null;
+
   @ApiProperty({ example: 'cash_on_delivery', description: 'Payment method', enum: PaymentMethod })
   paymentMethod: string;
 
@@ -73,6 +76,7 @@ export class OrderResponseDto {
       customerSurname: order.customerSurname,
       customerAddress: order.customerAddress,
       customerPhone: order.customerPhone,
+      customerEmail: order.customerEmail,
       paymentMethod: order.paymentMethod,
       totalPrice: order.totalPrice,
       status: order.status,

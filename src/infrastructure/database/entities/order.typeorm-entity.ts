@@ -19,6 +19,9 @@ export class OrderTypeormEntity {
   @Column({ name: 'customer_phone' })
   customerPhone: string;
 
+  @Column({ name: 'customer_email', nullable: true })
+  customerEmail: string;
+
   @Column({ name: 'payment_method' })
   paymentMethod: string;
 

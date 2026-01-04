@@ -16,6 +16,7 @@ export interface CreateOrderInput {
   customerSurname: string;
   customerAddress: string;
   customerPhone: string;
+  customerEmail: string;
   items: CreateOrderItemInput[];
   paymentMethod: string;
   userId?: string;
@@ -31,7 +32,7 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute(input: CreateOrderInput): Promise<Order> {
-    const { customerName, customerSurname, customerAddress, customerPhone, items, paymentMethod, userId } = input;
+    const { customerName, customerSurname, customerAddress, customerPhone, customerEmail, items, paymentMethod, userId } = input;
 
     if (!items || items.length === 0) {
       throw new BadRequestException('Order must contain at least one item');
@@ -68,6 +69,7 @@ export class CreateOrderUseCase {
       customerSurname,
       customerAddress,
       customerPhone,
+      customerEmail,
       paymentMethod as PaymentMethod,
       totalPrice,
       OrderStatus.PENDING,
