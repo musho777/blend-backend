@@ -28,13 +28,15 @@ export class GetProductsByCategoryUseCase {
   async executePaginated(
     categoryId: string,
     options: PaginationOptions,
-    subcategoryId?: string
+    subcategoryId?: string,
+    search?: string
   ): Promise<PaginatedResult<Product>> {
     await this.validateCategory(categoryId);
     return await this.productRepository.findByCategoryIdPaginated(
       categoryId,
       options,
-      subcategoryId
+      subcategoryId,
+      search
     );
   }
 

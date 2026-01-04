@@ -77,20 +77,32 @@ export class ProductRepository implements IProductRepository {
   async findByCategoryIdPaginated(
     categoryId: string,
     options: PaginationOptions,
-    subcategoryId?: string
+    subcategoryId?: string,
+    search?: string
   ): Promise<PaginatedResult<Product>> {
-    const where: any = { categoryId, disabled: false };
-    console.log("fdkjf");
+    const queryBuilder = this.repository
+      .createQueryBuilder("product")
+      .where("product.categoryId = :categoryId", { categoryId })
+      .andWhere("product.disabled = :disabled", { disabled: false });
+
     if (subcategoryId) {
-      where.subcategoryId = subcategoryId;
+      queryBuilder.andWhere("product.subcategoryId = :subcategoryId", {
+        subcategoryId,
+      });
     }
 
-    const [entities, total] = await this.repository.findAndCount({
-      where,
-      order: { priority: "DESC", createdAt: "DESC" },
-      skip: options.skip,
-      take: options.limit,
-    });
+    if (search) {
+      queryBuilder.andWhere("LOWER(product.title) LIKE LOWER(:search)", {
+        search: `%${search}%`,
+      });
+    }
+
+    const [entities, total] = await queryBuilder
+      .orderBy("product.priority", "DESC")
+      .addOrderBy("product.createdAt", "DESC")
+      .skip(options.skip)
+      .take(options.limit)
+      .getManyAndCount();
 
     const data = entities.map(ProductMapper.toDomain);
     return { data, total };

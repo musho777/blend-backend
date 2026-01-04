@@ -1,4 +1,4 @@
-import { IsOptional, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '../common/pagination.dto';
 
@@ -11,4 +11,13 @@ export class GetProductsByCategoryQueryDto extends PaginationDto {
   @IsOptional()
   @IsUUID()
   subcategoryId?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Search products by name',
+    example: 'iPhone',
+  })
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

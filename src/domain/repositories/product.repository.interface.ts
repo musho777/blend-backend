@@ -19,7 +19,7 @@ export interface IProductRepository {
   findBestSellers(): Promise<Product[]>;
   findBestSelect(): Promise<Product[]>;
   findByCategoryId(categoryId: string): Promise<Product[]>;
-  findByCategoryIdPaginated(categoryId: string, options: PaginationOptions, subcategoryId?: string): Promise<PaginatedResult<Product>>;
+  findByCategoryIdPaginated(categoryId: string, options: PaginationOptions, subcategoryId?: string, search?: string): Promise<PaginatedResult<Product>>;
   findRandomByCategoryId(categoryId: string, limit: number, excludeProductId?: string): Promise<Product[]>;
   create(product: Product): Promise<Product>;
   update(id: string, product: Partial<Product>): Promise<Product>;

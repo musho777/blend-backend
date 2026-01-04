@@ -315,7 +315,8 @@ export class CategoryController {
         limit,
         skip,
       },
-      queryDto.subcategoryId
+      queryDto.subcategoryId,
+      queryDto.search
     );
 
     const productDtos = ProductResponseDto.fromDomainArray(result.data);
