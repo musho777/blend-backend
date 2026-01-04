@@ -132,18 +132,33 @@ export class ProductController {
   }
 
   @Get(":id")
-  @ApiOperation({ summary: "Get product by ID" })
+  @ApiOperation({ summary: "Get product by ID with suggestions" })
   @ApiParam({ name: "id", description: "Product UUID" })
   @ApiResponse({
     status: 200,
-    description: "Product found",
-    type: ProductResponseDto,
+    description: "Product found with 10 random suggested products from the same category",
+    schema: {
+      type: "object",
+      properties: {
+        product: { $ref: "#/components/schemas/ProductResponseDto" },
+        suggestions: {
+          type: "array",
+          items: { $ref: "#/components/schemas/ProductResponseDto" },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: "Invalid UUID" })
   @ApiResponse({ status: 404, description: "Product not found" })
-  async findOne(@Param("id") id: string): Promise<ProductResponseDto> {
-    const product = await this.getProductByIdUseCase.execute(id);
-    return ProductResponseDto.fromDomain(product);
+  async findOne(@Param("id") id: string): Promise<{
+    product: ProductResponseDto;
+    suggestions: ProductResponseDto[];
+  }> {
+    const result = await this.getProductByIdUseCase.execute(id);
+    return {
+      product: ProductResponseDto.fromDomain(result.product),
+      suggestions: ProductResponseDto.fromDomainArray(result.suggestions),
+    };
   }
 
   @Post()

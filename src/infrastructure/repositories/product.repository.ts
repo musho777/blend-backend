@@ -96,6 +96,30 @@ export class ProductRepository implements IProductRepository {
     return { data, total };
   }
 
+  async findRandomByCategoryId(
+    categoryId: string,
+    limit: number,
+    excludeProductId?: string
+  ): Promise<Product[]> {
+    const queryBuilder = this.repository
+      .createQueryBuilder("product")
+      .where("product.categoryId = :categoryId", { categoryId })
+      .andWhere("product.disabled = :disabled", { disabled: false });
+
+    if (excludeProductId) {
+      queryBuilder.andWhere("product.id != :excludeProductId", {
+        excludeProductId,
+      });
+    }
+
+    const entities = await queryBuilder
+      .orderBy("RANDOM()")
+      .take(limit)
+      .getMany();
+
+    return entities.map(ProductMapper.toDomain);
+  }
+
   async create(product: Product): Promise<Product> {
     const entity = ProductMapper.toTypeorm(product);
     const saved = await this.repository.save(entity);
