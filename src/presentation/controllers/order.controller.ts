@@ -31,6 +31,7 @@ import { GetAllOrdersUseCase } from "@application/use-cases/order/get-all-orders
 import { GetOrderByIdUseCase } from "@application/use-cases/order/get-order-by-id.use-case";
 import { UpdateOrderStatusUseCase } from "@application/use-cases/order/update-order-status.use-case";
 import { DeleteOrderUseCase } from "@application/use-cases/order/delete-order.use-case";
+import { GetOrderStatisticsUseCase } from "@application/use-cases/order/get-order-statistics.use-case";
 import { IOrderRepository, ORDER_REPOSITORY } from "@domain/repositories/order.repository.interface";
 
 @ApiTags("Orders")
@@ -43,6 +44,7 @@ export class OrderController {
     private readonly getOrderByIdUseCase: GetOrderByIdUseCase,
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
     private readonly deleteOrderUseCase: DeleteOrderUseCase,
+    private readonly getOrderStatisticsUseCase: GetOrderStatisticsUseCase,
   ) {}
   
   @Get()
@@ -204,10 +206,8 @@ export class OrderController {
           type: "object",
           properties: {
             pending: { type: "number", example: 10 },
-            processing: { type: "number", example: 5 },
-            shipped: { type: "number", example: 8 },
-            delivered: { type: "number", example: 120 },
-            cancelled: { type: "number", example: 7 },
+            rejected: { type: "number", example: 5 },
+            success: { type: "number", example: 120 },
           },
         },
         monthlyRevenue: {
@@ -229,10 +229,8 @@ export class OrderController {
     totalRevenue: number;
     ordersByStatus: {
       pending: number;
-      processing: number;
-      shipped: number;
-      delivered: number;
-      cancelled: number;
+      rejected: number;
+      success: number;
     };
     monthlyRevenue: Array<{
       month: string;
@@ -240,19 +238,7 @@ export class OrderController {
       orders: number;
     }>;
   }> {
-    // TODO: Implement with use case
-    return {
-      totalOrders: 0,
-      totalRevenue: 0,
-      ordersByStatus: {
-        pending: 0,
-        processing: 0,
-        shipped: 0,
-        delivered: 0,
-        cancelled: 0,
-      },
-      monthlyRevenue: [],
-    };
+    return await this.getOrderStatisticsUseCase.execute();
   }
 }
 

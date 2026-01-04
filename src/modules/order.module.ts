@@ -9,6 +9,7 @@ import { GetAllOrdersUseCase } from '@application/use-cases/order/get-all-orders
 import { GetOrderByIdUseCase } from '@application/use-cases/order/get-order-by-id.use-case';
 import { UpdateOrderStatusUseCase } from '@application/use-cases/order/update-order-status.use-case';
 import { DeleteOrderUseCase } from '@application/use-cases/order/delete-order.use-case';
+import { GetOrderStatisticsUseCase } from '@application/use-cases/order/get-order-statistics.use-case';
 import { ProductModule } from './product.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { ProductModule } from './product.module';
     GetOrderByIdUseCase,
     UpdateOrderStatusUseCase,
     DeleteOrderUseCase,
+    GetOrderStatisticsUseCase,
   ],
   exports: [ORDER_REPOSITORY],
 })
