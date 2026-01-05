@@ -271,7 +271,7 @@ export class CategoryController {
   @Get(":id/products")
   @ApiOperation({
     summary:
-      "Get all products for a specific category with optional pagination, subcategory filter, and sorting",
+      "Get all products for a specific category with optional pagination, subcategory filter, sorting, and price range filter",
   })
   @ApiParam({ name: "id", description: "Category UUID" })
   @ApiResponse({
@@ -317,7 +317,9 @@ export class CategoryController {
       },
       queryDto.subcategoryId,
       queryDto.search,
-      queryDto.sortBy
+      queryDto.sortBy,
+      queryDto.minPrice,
+      queryDto.maxPrice
     );
 
     const productDtos = ProductResponseDto.fromDomainArray(result.data);

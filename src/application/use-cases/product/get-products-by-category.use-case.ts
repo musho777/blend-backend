@@ -31,7 +31,9 @@ export class GetProductsByCategoryUseCase {
     options: PaginationOptions,
     subcategoryId?: string,
     search?: string,
-    sortBy?: ProductSortBy
+    sortBy?: ProductSortBy,
+    minPrice?: number,
+    maxPrice?: number
   ): Promise<PaginatedResult<Product>> {
     await this.validateCategory(categoryId);
     return await this.productRepository.findByCategoryIdPaginated(
@@ -39,7 +41,9 @@ export class GetProductsByCategoryUseCase {
       options,
       subcategoryId,
       search,
-      sortBy
+      sortBy,
+      minPrice,
+      maxPrice
     );
   }
 

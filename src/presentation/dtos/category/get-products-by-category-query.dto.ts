@@ -1,6 +1,7 @@
-import { IsOptional, IsString, IsUUID, IsIn } from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsIn, IsNumber, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '../common/pagination.dto';
+import { Type, Transform } from 'class-transformer';
 
 export enum ProductSortBy {
   DEFAULT = 'default',
@@ -38,4 +39,36 @@ export class GetProductsByCategoryQueryDto extends PaginationDto {
   @IsOptional()
   @IsIn(Object.values(ProductSortBy))
   sortBy?: ProductSortBy;
+
+  @ApiProperty({
+    required: false,
+    description: 'Minimum price filter',
+    example: 0,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === '' || value === null || value === undefined) {
+      return undefined;
+    }
+    return Number(value);
+  })
+  @IsNumber()
+  @Min(0)
+  minPrice?: number;
+
+  @ApiProperty({
+    required: false,
+    description: 'Maximum price filter',
+    example: 1000,
+  })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === '' || value === null || value === undefined) {
+      return undefined;
+    }
+    return Number(value);
+  })
+  @IsNumber()
+  @Min(0)
+  maxPrice?: number;
 }

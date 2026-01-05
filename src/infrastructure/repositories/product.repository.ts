@@ -79,7 +79,9 @@ export class ProductRepository implements IProductRepository {
     options: PaginationOptions,
     subcategoryId?: string,
     search?: string,
-    sortBy?: string
+    sortBy?: string,
+    minPrice?: number,
+    maxPrice?: number
   ): Promise<PaginatedResult<Product>> {
     const queryBuilder = this.repository
       .createQueryBuilder("product")
@@ -96,6 +98,15 @@ export class ProductRepository implements IProductRepository {
       queryBuilder.andWhere("LOWER(product.title) LIKE LOWER(:search)", {
         search: `%${search}%`,
       });
+    }
+
+    // Apply price range filter
+    if (minPrice !== undefined && minPrice !== null) {
+      queryBuilder.andWhere("product.price >= :minPrice", { minPrice });
+    }
+
+    if (maxPrice !== undefined && maxPrice !== null) {
+      queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice });
     }
 
     // Apply sorting based on sortBy parameter
