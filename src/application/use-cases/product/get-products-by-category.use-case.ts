@@ -10,6 +10,7 @@ import {
   CATEGORY_REPOSITORY,
 } from "@domain/repositories/category.repository.interface";
 import { Product } from "@domain/entities/product.entity";
+import { ProductSortBy } from "@presentation/dtos/category/get-products-by-category-query.dto";
 
 @Injectable()
 export class GetProductsByCategoryUseCase {
@@ -29,14 +30,16 @@ export class GetProductsByCategoryUseCase {
     categoryId: string,
     options: PaginationOptions,
     subcategoryId?: string,
-    search?: string
+    search?: string,
+    sortBy?: ProductSortBy
   ): Promise<PaginatedResult<Product>> {
     await this.validateCategory(categoryId);
     return await this.productRepository.findByCategoryIdPaginated(
       categoryId,
       options,
       subcategoryId,
-      search
+      search,
+      sortBy
     );
   }
 

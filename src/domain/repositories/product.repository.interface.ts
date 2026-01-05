@@ -1,4 +1,5 @@
 import { Product } from '../entities/product.entity';
+import { ProductSortBy } from '@presentation/dtos/category/get-products-by-category-query.dto';
 
 export interface PaginationOptions {
   page: number;
@@ -19,7 +20,7 @@ export interface IProductRepository {
   findBestSellers(): Promise<Product[]>;
   findBestSelect(): Promise<Product[]>;
   findByCategoryId(categoryId: string): Promise<Product[]>;
-  findByCategoryIdPaginated(categoryId: string, options: PaginationOptions, subcategoryId?: string, search?: string): Promise<PaginatedResult<Product>>;
+  findByCategoryIdPaginated(categoryId: string, options: PaginationOptions, subcategoryId?: string, search?: string, sortBy?: ProductSortBy): Promise<PaginatedResult<Product>>;
   findRandomByCategoryId(categoryId: string, limit: number, excludeProductId?: string): Promise<Product[]>;
   create(product: Product): Promise<Product>;
   update(id: string, product: Partial<Product>): Promise<Product>;

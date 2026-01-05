@@ -1,6 +1,14 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from '../common/pagination.dto';
+
+export enum ProductSortBy {
+  DEFAULT = 'default',
+  NEWEST = 'newest',
+  OLDEST = 'oldest',
+  PRICE_HIGH_TO_LOW = 'price_high_to_low',
+  PRICE_LOW_TO_HIGH = 'price_low_to_high',
+}
 
 export class GetProductsByCategoryQueryDto extends PaginationDto {
   @ApiProperty({
@@ -20,4 +28,14 @@ export class GetProductsByCategoryQueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Sort products by',
+    enum: ProductSortBy,
+    example: ProductSortBy.DEFAULT,
+  })
+  @IsOptional()
+  @IsIn(Object.values(ProductSortBy))
+  sortBy?: ProductSortBy;
 }

@@ -78,7 +78,8 @@ export class ProductRepository implements IProductRepository {
     categoryId: string,
     options: PaginationOptions,
     subcategoryId?: string,
-    search?: string
+    search?: string,
+    sortBy?: string
   ): Promise<PaginatedResult<Product>> {
     const queryBuilder = this.repository
       .createQueryBuilder("product")
@@ -97,9 +98,29 @@ export class ProductRepository implements IProductRepository {
       });
     }
 
+    // Apply sorting based on sortBy parameter
+    switch (sortBy) {
+      case 'newest':
+        queryBuilder.orderBy("product.createdAt", "DESC");
+        break;
+      case 'oldest':
+        queryBuilder.orderBy("product.createdAt", "ASC");
+        break;
+      case 'price_high_to_low':
+        queryBuilder.orderBy("product.price", "DESC");
+        break;
+      case 'price_low_to_high':
+        queryBuilder.orderBy("product.price", "ASC");
+        break;
+      case 'default':
+      default:
+        queryBuilder
+          .orderBy("product.priority", "DESC")
+          .addOrderBy("product.createdAt", "DESC");
+        break;
+    }
+
     const [entities, total] = await queryBuilder
-      .orderBy("product.priority", "DESC")
-      .addOrderBy("product.createdAt", "DESC")
       .skip(options.skip)
       .take(options.limit)
       .getManyAndCount();
