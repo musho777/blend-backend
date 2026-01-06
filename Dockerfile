@@ -1,8 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
-
-# Install build dependencies for native modules (sharp, bcrypt)
-RUN apk add --no-cache python3 make g++ vips-dev
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -19,10 +16,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine
-
-# Install runtime dependencies for sharp
-RUN apk add --no-cache vips-dev
+FROM node:20-slim
 
 WORKDIR /app
 

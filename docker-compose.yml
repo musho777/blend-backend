@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: blend
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -22,6 +22,7 @@ services:
 
   # NestJS Application
   app:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
@@ -39,6 +40,9 @@ services:
       JWT_EXPIRATION: 24h
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin123
+      GOOGLE_CLIENT_ID: placeholder-client-id
+      GOOGLE_CLIENT_SECRET: placeholder-client-secret
+      GOOGLE_CALLBACK_URL: http://localhost:3000/auth/google/callback
     volumes:
       - ./uploads:/app/uploads
     depends_on:
