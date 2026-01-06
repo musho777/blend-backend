@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     gcc \
     g++ \
     make \
+    python3 \
     libc6-compat
 
 WORKDIR /app
@@ -35,11 +36,8 @@ WORKDIR /app
 # Copy package files first
 COPY package.json package-lock.json ./
 
-# Copy node_modules from builder (already built with native modules)
-COPY --from=builder /app/node_modules ./node_modules
-
-# Rebuild sharp for the production Alpine environment
-RUN npm rebuild sharp
+# Install production dependencies (this will build native modules correctly for Alpine)
+RUN npm ci --omit=dev
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
