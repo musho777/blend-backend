@@ -20,6 +20,9 @@ FROM node:20-slim
 
 WORKDIR /app
 
+# Copy package files
+COPY --from=builder /app/package.json ./package.json
+
 # Copy node_modules from builder (already built with native modules)
 COPY --from=builder /app/node_modules ./node_modules
 

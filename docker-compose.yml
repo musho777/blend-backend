@@ -37,7 +37,7 @@ services:
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
       DATABASE_NAME: blend
-      JWT_SECRET: GGGWiaD5sUr8l1dLfuZUvMtdCxn2sPVDg5x33suWBY9Np4Iz1BkBG+BifVo1mn0hRW0toLCZ1X+joqikDzjHkQ==
+      JWT_SECRET: "GGGWiaD5sUr8l1dLfuZUvMtdCxn2sPVDg5x33suWBY9Np4Iz1BkBG+BifVo1mn0hRW0toLCZ1X+joqikDzjHkQ=="
       JWT_EXPIRATION: 24h
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin123

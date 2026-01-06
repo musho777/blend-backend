@@ -17,8 +17,7 @@ import { OrderModule } from './modules/order.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
-      ignoreEnvFile: process.env.NODE_ENV === 'production',
+      ignoreEnvFile: false,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
