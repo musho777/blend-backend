@@ -7,7 +7,7 @@ RUN apk add --no-cache python3 make g++
 WORKDIR /app
 
 # Copy package files
-COPY package.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm ci
@@ -27,10 +27,10 @@ RUN apk add --no-cache vips-dev
 WORKDIR /app
 
 # Copy package files
-COPY package.json ./
+COPY package.json package-lock.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production && npm cache clean --force
+# Copy node_modules from builder (already built with native modules)
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
