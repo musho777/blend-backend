@@ -11,24 +11,51 @@ import { VerificationCodeTypeormEntity } from '@infrastructure/database/entities
 
 export const getDatabaseConfig = (
   configService: ConfigService,
-): TypeOrmModuleOptions => ({
-  type: 'postgres',
-  host: configService.get<string>('DATABASE_HOST', 'localhost'),
-  port: configService.get<number>('DATABASE_PORT', 5432),
-  username: configService.get<string>('DATABASE_USER', 'postgres'),
-  password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
-  database: configService.get<string>('DATABASE_NAME', 'blend'),
-  entities: [
-    ProductTypeormEntity,
-    CategoryTypeormEntity,
-    SubcategoryTypeormEntity,
-    OrderTypeormEntity,
-    OrderItemTypeormEntity,
-    AdminTypeormEntity,
-    BannerTypeormEntity,
-    UserTypeormEntity,
-    VerificationCodeTypeormEntity,
-  ],
-  synchronize: true, // Set to false in production and use migrations
-  logging: configService.get<string>('NODE_ENV') === 'development',
-});
+): TypeOrmModuleOptions => {
+  // Check if DATABASE_URL is provided (Railway style)
+  const databaseUrl = configService.get<string>('DATABASE_URL');
+
+  if (databaseUrl) {
+    return {
+      type: 'postgres',
+      url: databaseUrl,
+      entities: [
+        ProductTypeormEntity,
+        CategoryTypeormEntity,
+        SubcategoryTypeormEntity,
+        OrderTypeormEntity,
+        OrderItemTypeormEntity,
+        AdminTypeormEntity,
+        BannerTypeormEntity,
+        UserTypeormEntity,
+        VerificationCodeTypeormEntity,
+      ],
+      synchronize: true, // Set to false in production and use migrations
+      logging: configService.get<string>('NODE_ENV') === 'development',
+      ssl: configService.get<string>('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+    };
+  }
+
+  // Fallback to individual environment variables
+  return {
+    type: 'postgres',
+    host: configService.get<string>('DATABASE_HOST', 'localhost'),
+    port: configService.get<number>('DATABASE_PORT', 5432),
+    username: configService.get<string>('DATABASE_USER', 'postgres'),
+    password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
+    database: configService.get<string>('DATABASE_NAME', 'blend'),
+    entities: [
+      ProductTypeormEntity,
+      CategoryTypeormEntity,
+      SubcategoryTypeormEntity,
+      OrderTypeormEntity,
+      OrderItemTypeormEntity,
+      AdminTypeormEntity,
+      BannerTypeormEntity,
+      UserTypeormEntity,
+      VerificationCodeTypeormEntity,
+    ],
+    synchronize: true, // Set to false in production and use migrations
+    logging: configService.get<string>('NODE_ENV') === 'development',
+  };
+};
