@@ -6,9 +6,6 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 import { join } from "path";
 
 async function bootstrap() {
-  console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
-  console.log('JWT_SECRET length:', process.env.JWT_SECRET?.length || 0);
-
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useStaticAssets(join(__dirname, "..", "uploads"), {

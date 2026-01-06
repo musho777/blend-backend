@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
 
 export interface UserJwtPayload {
   sub: string;
@@ -11,8 +10,8 @@ export interface UserJwtPayload {
 
 @Injectable()
 export class UserJwtStrategy extends PassportStrategy(Strategy, 'user-jwt') {
-  constructor(private readonly configService: ConfigService) {
-    const secret = configService.get<string>('JWT_SECRET');
+  constructor() {
+    const secret = process.env.JWT_SECRET;
     if (!secret) {
       throw new Error('JWT_SECRET is not defined in environment variables');
     }
