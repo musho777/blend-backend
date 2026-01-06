@@ -26,9 +26,6 @@ RUN apk add --no-cache vips-dev
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
-
 # Copy node_modules from builder (already built with native modules)
 COPY --from=builder /app/node_modules ./node_modules
 
