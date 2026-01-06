@@ -27,7 +27,7 @@ RUN apk add --no-cache vips-dev
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install production dependencies only
 RUN npm ci --only=production && npm cache clean --force
