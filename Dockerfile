@@ -8,7 +8,6 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY yarn.lock ./
 
 # Install dependencies
 RUN npm ci
@@ -29,7 +28,6 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY yarn.lock ./
 
 # Install production dependencies only
 RUN npm ci --only=production && npm cache clean --force
