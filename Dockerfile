@@ -21,13 +21,25 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine
 
-# Install runtime dependencies for sharp
-RUN apk add --no-cache vips-dev
+# Install runtime dependencies for sharp and other native modules
+RUN apk add --no-cache \
+    vips-dev \
+    fftw-dev \
+    gcc \
+    g++ \
+    make \
+    libc6-compat
 
 WORKDIR /app
 
+# Copy package files first
+COPY package.json package-lock.json ./
+
 # Copy node_modules from builder (already built with native modules)
 COPY --from=builder /app/node_modules ./node_modules
+
+# Rebuild sharp for the production Alpine environment
+RUN npm rebuild sharp
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
