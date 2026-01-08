@@ -1,39 +1,22 @@
 import { Injectable } from "@nestjs/common";
-import * as nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
+  private fromEmail: string;
 
   constructor(private configService: ConfigService) {
-    const emailUser = this.configService.get<string>("EMAIL_USER");
-    const emailPassword = this.configService.get<string>("EMAIL_PASSWORD");
+    const resendApiKey = this.configService.get<string>("RESEND_API_KEY");
+    this.fromEmail =
+      this.configService.get<string>("FROM_EMAIL") || "onboarding@resend.dev";
 
     console.log("Email Configuration:");
-    console.log("EMAIL_USER:", emailUser);
-    console.log("EMAIL_PASSWORD exists:", !!emailPassword);
-    console.log("EMAIL_PASSWORD length:", emailPassword?.length || 0);
-    console.log(
-      "EMAIL_PASSWORD (first 4 chars):",
-      emailPassword || "undefined"
-    );
+    console.log("RESEND_API_KEY exists:", !!resendApiKey);
+    console.log("FROM_EMAIL:", this.fromEmail);
 
-    this.transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // use STARTTLS
-      auth: {
-        user: emailUser,
-        pass: emailPassword,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
-    });
+    this.resend = new Resend(resendApiKey);
   }
 
   async sendVerificationEmail(
@@ -41,15 +24,12 @@ export class EmailService {
     code: string,
     firstName: string
   ): Promise<void> {
-    const emailPassword = this.configService.get<string>("EMAIL_PASSWORD");
-
-    console.log("fdj", "emailPassword", emailPassword);
-
-    const mailOptions = {
-      from: this.configService.get<string>("EMAIL_USER"),
-      to: email,
-      subject: "Email Verification - Blend",
-      html: `
+    try {
+      const { data, error } = await this.resend.emails.send({
+        from: this.fromEmail,
+        to: email,
+        subject: "Email Verification - Blend",
+        html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">Welcome to Blend, ${firstName}!</h2>
           <p style="font-size: 16px; color: #555;">Thank you for registering with us. Please verify your email address to complete your registration.</p>
@@ -63,17 +43,27 @@ export class EmailService {
           <p style="font-size: 12px; color: #999;">This is an automated email, please do not reply.</p>
         </div>
       `,
-    };
+      });
 
-    await this.transporter.sendMail(mailOptions);
+      if (error) {
+        console.error("Error sending verification email:", error);
+        throw new Error(`Failed to send verification email: ${error.message}`);
+      }
+
+      console.log("Verification email sent successfully:", data);
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      throw error;
+    }
   }
 
   async sendWelcomeEmail(email: string, firstName: string): Promise<void> {
-    const mailOptions = {
-      from: this.configService.get<string>("EMAIL_USER"),
-      to: email,
-      subject: "Welcome to Blend!",
-      html: `
+    try {
+      const { data, error } = await this.resend.emails.send({
+        from: this.fromEmail,
+        to: email,
+        subject: "Welcome to Blend!",
+        html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">Welcome to Blend, ${firstName}!</h2>
           <p style="font-size: 16px; color: #555;">Your email has been successfully verified. You can now enjoy all the features of our platform!</p>
@@ -82,8 +72,17 @@ export class EmailService {
           <p style="font-size: 12px; color: #999;">This is an automated email, please do not reply.</p>
         </div>
       `,
-    };
+      });
 
-    await this.transporter.sendMail(mailOptions);
+      if (error) {
+        console.error("Error sending welcome email:", error);
+        throw new Error(`Failed to send welcome email: ${error.message}`);
+      }
+
+      console.log("Welcome email sent successfully:", data);
+    } catch (error) {
+      console.error("Error sending welcome email:", error);
+      throw error;
+    }
   }
 }
