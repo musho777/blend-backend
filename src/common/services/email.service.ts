@@ -33,6 +33,10 @@ export class EmailService {
     code: string,
     firstName: string
   ): Promise<void> {
+    const emailPassword = this.configService.get<string>("EMAIL_PASSWORD");
+
+    console.log("fdj", "emailPassword", emailPassword);
+
     const mailOptions = {
       from: this.configService.get<string>("EMAIL_USER"),
       to: email,
