@@ -16,7 +16,7 @@ export class EmailService {
     console.log("EMAIL_PASSWORD length:", emailPassword?.length || 0);
     console.log(
       "EMAIL_PASSWORD (first 4 chars):",
-      emailPassword?.substring(0, 4) || "undefined"
+      emailPassword || "undefined"
     );
 
     this.transporter = nodemailer.createTransport({
