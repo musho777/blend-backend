@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from "@nestjs/common";
+import * as nodemailer from "nodemailer";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor(private configService: ConfigService) {
+    const emailUser = this.configService.get<string>("EMAIL_USER");
+    const emailPassword = this.configService.get<string>("EMAIL_PASSWORD");
+
+    console.log("Email Configuration:");
+    console.log("EMAIL_USER:", emailUser);
+    console.log("EMAIL_PASSWORD exists:", !!emailPassword);
+    console.log("EMAIL_PASSWORD length:", emailPassword?.length || 0);
+    console.log(
+      "EMAIL_PASSWORD (first 4 chars):",
+      emailPassword?.substring(0, 4) || "undefined"
+    );
+
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: this.configService.get<string>('EMAIL_USER'),
-        pass: this.configService.get<string>('EMAIL_PASSWORD'),
+        user: emailUser,
+        pass: emailPassword,
       },
     });
   }
 
-  async sendVerificationEmail(email: string, code: string, firstName: string): Promise<void> {
+  async sendVerificationEmail(
+    email: string,
+    code: string,
+    firstName: string
+  ): Promise<void> {
     const mailOptions = {
-      from: this.configService.get<string>('EMAIL_USER'),
+      from: this.configService.get<string>("EMAIL_USER"),
       to: email,
-      subject: 'Email Verification - Blend',
+      subject: "Email Verification - Blend",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">Welcome to Blend, ${firstName}!</h2>
@@ -42,9 +58,9 @@ export class EmailService {
 
   async sendWelcomeEmail(email: string, firstName: string): Promise<void> {
     const mailOptions = {
-      from: this.configService.get<string>('EMAIL_USER'),
+      from: this.configService.get<string>("EMAIL_USER"),
       to: email,
-      subject: 'Welcome to Blend!',
+      subject: "Welcome to Blend!",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #333;">Welcome to Blend, ${firstName}!</h2>
