@@ -9,5 +9,5 @@ export class VerifyEmailDto {
   @ApiProperty({ example: '123456', description: '6-digit verification code' })
   @IsString()
   @Length(6, 6)
-  code: string;
+  otp: string;
 }

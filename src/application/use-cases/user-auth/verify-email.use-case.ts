@@ -7,7 +7,7 @@ import { EmailService } from '@common/services/email.service';
 
 export interface VerifyEmailInput {
   email: string;
-  code: string;
+  otp: string;
 }
 
 @Injectable()
@@ -35,7 +35,7 @@ export class VerifyEmailUseCase {
       isVerified: boolean;
     };
   }> {
-    const { email, code } = input;
+    const { email, otp } = input;
 
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
@@ -46,7 +46,7 @@ export class VerifyEmailUseCase {
       throw new BadRequestException('Email is already verified');
     }
 
-    const verificationCode = await this.verificationCodeRepository.findByUserIdAndCode(user.id, code);
+    const verificationCode = await this.verificationCodeRepository.findByUserIdAndCode(user.id, otp);
     if (!verificationCode) {
       throw new BadRequestException('Invalid verification code');
     }
