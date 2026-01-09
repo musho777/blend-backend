@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^2.0.76",
+    "@google-cloud/storage": "^7.18.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
