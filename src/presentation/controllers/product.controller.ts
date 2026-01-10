@@ -28,6 +28,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { JwtAuthGuard } from "@auth/guards/jwt-auth.guard";
 import { ImageOptimizationService } from "@common/services/image-optimization.service";
+import { GoogleCloudStorageService } from "@common/services/google-cloud-storage.service";
 import { CreateProductDto } from "../dtos/product/create-product.dto";
 import { UpdateProductDto } from "../dtos/product/update-product.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
@@ -73,7 +74,8 @@ export class ProductController {
     private readonly deleteProductUseCase: DeleteProductUseCase,
     private readonly getProductsUseCase: GetProductsUseCase,
     private readonly getProductByIdUseCase: GetProductByIdUseCase,
-    private readonly imageOptimizationService: ImageOptimizationService
+    private readonly imageOptimizationService: ImageOptimizationService,
+    private readonly gcsService: GoogleCloudStorageService
   ) {}
 
   @Get()
@@ -214,7 +216,7 @@ export class ProductController {
       const optimizedPaths =
         await this.imageOptimizationService.optimizeMultipleImages(
           tempPaths,
-          "./uploads/products",
+          "./uploads/products/temp-optimized",
           {
             preset: "large",
             quality: 80,
@@ -224,9 +226,13 @@ export class ProductController {
           }
         );
 
-      createProductDto.imageUrls = optimizedPaths.map((filePath) =>
-        filePath.replace("./uploads", "/uploads")
+      // Upload optimized images to Google Cloud Storage
+      const gcsUrls = await this.gcsService.uploadMultipleFiles(
+        optimizedPaths,
+        "products"
       );
+
+      createProductDto.imageUrls = gcsUrls;
     }
 
     const product = await this.createProductUseCase.execute(createProductDto);
@@ -295,7 +301,7 @@ export class ProductController {
       const optimizedPaths =
         await this.imageOptimizationService.optimizeMultipleImages(
           tempPaths,
-          "./uploads/products",
+          "./uploads/products/temp-optimized",
           {
             preset: "large",
             quality: 80,
@@ -305,14 +311,16 @@ export class ProductController {
           }
         );
 
-      const newImageUrls = optimizedPaths.map((filePath) =>
-        filePath.replace("./uploads", "/uploads")
+      // Upload optimized images to Google Cloud Storage
+      const gcsUrls = await this.gcsService.uploadMultipleFiles(
+        optimizedPaths,
+        "products"
       );
 
       if (!updateProductDto.imageUrls) {
         updateProductDto.imageUrls = [];
       }
-      updateProductDto.imageUrls.push(...newImageUrls);
+      updateProductDto.imageUrls.push(...gcsUrls);
     }
 
     const product = await this.updateProductUseCase.execute(

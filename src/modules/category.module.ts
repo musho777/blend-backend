@@ -11,6 +11,7 @@ import { GetCategoriesUseCase } from '@application/use-cases/category/get-catego
 import { GetCategoryByIdUseCase } from '@application/use-cases/category/get-category-by-id.use-case';
 import { GetSubcategoriesByCategoryIdUseCase } from '@application/use-cases/subcategory/get-subcategories-by-category-id.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
+import { GoogleCloudStorageService } from '@common/services/google-cloud-storage.service';
 import { ProductModule } from './product.module';
 import { SubcategoryModule } from './subcategory.module';
 
@@ -33,6 +34,7 @@ import { SubcategoryModule } from './subcategory.module';
     GetCategoryByIdUseCase,
     GetSubcategoriesByCategoryIdUseCase,
     ImageOptimizationService,
+    GoogleCloudStorageService,
   ],
   exports: [CATEGORY_REPOSITORY],
 })

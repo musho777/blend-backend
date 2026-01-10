@@ -32,3 +32,6 @@ coverage/
 
 # Misc
 *.tgz
+# GCP Credentials
+project-*.json
+*.json

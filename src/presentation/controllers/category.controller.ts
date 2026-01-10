@@ -28,6 +28,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { JwtAuthGuard } from "@auth/guards/jwt-auth.guard";
 import { ImageOptimizationService } from "@common/services/image-optimization.service";
+import { GoogleCloudStorageService } from "@common/services/google-cloud-storage.service";
 import { FileUploadValidationPipe } from "@common/pipes/file-upload-validation.pipe";
 import { CreateCategoryDto } from "../dtos/category/create-category.dto";
 import { UpdateCategoryDto } from "../dtos/category/update-category.dto";
@@ -80,7 +81,8 @@ export class CategoryController {
     private readonly getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private readonly getSubcategoriesByCategoryIdUseCase: GetSubcategoriesByCategoryIdUseCase,
     private readonly getProductsByCategoryUseCase: GetProductsByCategoryUseCase,
-    private readonly imageOptimizationService: ImageOptimizationService
+    private readonly imageOptimizationService: ImageOptimizationService,
+    private readonly gcsService: GoogleCloudStorageService
   ) {}
 
   @Get()
@@ -151,7 +153,7 @@ export class CategoryController {
       const optimizedPaths =
         await this.imageOptimizationService.optimizeMultipleImages(
           [file.path],
-          "./uploads/categories",
+          "./uploads/categories/temp-optimized",
           {
             preset: "medium",
             quality: 85,
@@ -161,10 +163,13 @@ export class CategoryController {
           }
         );
 
-      createCategoryDto.image = optimizedPaths[0].replace(
-        "./uploads",
-        "/uploads"
+      // Upload optimized image to Google Cloud Storage
+      const gcsUrl = await this.gcsService.uploadFile(
+        optimizedPaths[0],
+        `categories/${path.basename(optimizedPaths[0])}`
       );
+
+      createCategoryDto.image = gcsUrl;
     }
 
     const category = await this.createCategoryUseCase.execute(
@@ -217,7 +222,7 @@ export class CategoryController {
       const optimizedPaths =
         await this.imageOptimizationService.optimizeMultipleImages(
           [file.path],
-          "./uploads/categories",
+          "./uploads/categories/temp-optimized",
           {
             preset: "medium",
             quality: 85,
@@ -227,10 +232,13 @@ export class CategoryController {
           }
         );
 
-      updateCategoryDto.image = optimizedPaths[0].replace(
-        "./uploads",
-        "/uploads"
+      // Upload optimized image to Google Cloud Storage
+      const gcsUrl = await this.gcsService.uploadFile(
+        optimizedPaths[0],
+        `categories/${path.basename(optimizedPaths[0])}`
       );
+
+      updateCategoryDto.image = gcsUrl;
     }
 
     const category = await this.updateCategoryUseCase.execute(
