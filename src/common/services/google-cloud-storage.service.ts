@@ -13,19 +13,45 @@ export class GoogleCloudStorageService {
   constructor(private configService: ConfigService) {
     const projectId = this.configService.get<string>('PROJECT_ID');
     const keyFilename = this.configService.get<string>('KEYFILENAME');
+    const gcpCredentials = this.configService.get<string>('GCP_CREDENTIALS');
     const bucketName = this.configService.get<string>('BUCKET_NAME');
 
-    if (!projectId || !keyFilename || !bucketName) {
+    if (!projectId || !bucketName) {
       this.logger.error(
-        'Missing required GCS configuration. Please check PROJECT_ID, KEYFILENAME, and BUCKET_NAME in .env'
+        'Missing required GCS configuration. Please check PROJECT_ID and BUCKET_NAME in .env'
       );
       throw new Error('Missing required GCS configuration');
     }
 
-    this.storage = new Storage({
-      projectId,
-      keyFilename,
-    });
+    // Support both file-based credentials (local dev) and JSON credentials (production)
+    let storageConfig: any = { projectId };
+
+    if (gcpCredentials) {
+      // Production: Use credentials from environment variable
+      try {
+        const credentials = JSON.parse(gcpCredentials);
+        storageConfig.credentials = credentials;
+        this.logger.log('Using GCP credentials from environment variable');
+      } catch (error) {
+        this.logger.error('Failed to parse GCP_CREDENTIALS environment variable');
+        throw new Error('Invalid GCP_CREDENTIALS format');
+      }
+    } else if (keyFilename) {
+      // Local dev: Use credentials file
+      if (!fs.existsSync(keyFilename)) {
+        this.logger.error(`Credentials file not found: ${keyFilename}`);
+        throw new Error(`Credentials file not found: ${keyFilename}`);
+      }
+      storageConfig.keyFilename = keyFilename;
+      this.logger.log(`Using GCP credentials from file: ${keyFilename}`);
+    } else {
+      this.logger.error(
+        'Missing GCS credentials. Please provide either KEYFILENAME or GCP_CREDENTIALS in .env'
+      );
+      throw new Error('Missing GCS credentials configuration');
+    }
+
+    this.storage = new Storage(storageConfig);
 
     this.bucket = this.storage.bucket(bucketName);
     this.logger.log(`Google Cloud Storage initialized with bucket: ${bucketName}`);
