@@ -3,14 +3,14 @@ import {
   IBannerRepository,
   BANNER_REPOSITORY,
 } from "@domain/repositories/banner.repository.interface";
-import * as fs from "fs";
-import * as path from "path";
+import { GoogleCloudStorageService } from "@common/services/google-cloud-storage.service";
 
 @Injectable()
 export class DeleteBannerUseCase {
   constructor(
     @Inject(BANNER_REPOSITORY)
-    private readonly bannerRepository: IBannerRepository
+    private readonly bannerRepository: IBannerRepository,
+    private readonly gcsService: GoogleCloudStorageService
   ) {}
 
   async execute(id: string): Promise<void> {
@@ -19,18 +19,13 @@ export class DeleteBannerUseCase {
       throw new NotFoundException(`Banner with id ${id} not found`);
     }
 
-    // Delete banner image from file system if it exists
+    // Delete banner image from Google Cloud Storage if it exists
     if (existingBanner.image) {
       try {
-        const filename = existingBanner.image.replace("/uploads/banners/", "");
-        const filePath = path.join(process.cwd(), filename);
-
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
+        await this.gcsService.deleteFile(existingBanner.image);
       } catch (error) {
         console.error(
-          `Failed to delete banner image file: ${existingBanner.image}`,
+          `Failed to delete banner image from GCS: ${existingBanner.image}`,
           error
         );
       }
