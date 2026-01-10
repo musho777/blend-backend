@@ -5,8 +5,6 @@ import {
 } from "@domain/repositories/banner.repository.interface";
 import { Banner } from "@domain/entities/banner.entity";
 import { UpdateBannerDto } from "@presentation/dtos/banner/update-banner.dto";
-import * as fs from "fs";
-import * as path from "path";
 
 @Injectable()
 export class UpdateBannerUseCase {
@@ -21,27 +19,7 @@ export class UpdateBannerUseCase {
       throw new NotFoundException(`Banner with id ${id} not found`);
     }
 
-    // Delete old image if a new image is provided
-    if (
-      dto.image &&
-      existingBanner.image &&
-      dto.image !== existingBanner.image
-    ) {
-      try {
-        const filename = existingBanner.image.replace("/uploads/banners/", "");
-        const filePath = path.join(process.cwd(), filename);
-
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      } catch (error) {
-        console.error(
-          `Failed to delete old banner image file: ${existingBanner.image}`,
-          error
-        );
-      }
-    }
-
+    // Note: Old image deletion from GCS is handled in the controller layer
     const updatedBanner = new Banner(
       existingBanner.id,
       dto.image !== undefined ? dto.image : existingBanner.image,

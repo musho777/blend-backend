@@ -11,6 +11,7 @@ import { GetBannersUseCase } from '@application/use-cases/banner/get-banners.use
 import { GetBannerByIdUseCase } from '@application/use-cases/banner/get-banner-by-id.use-case';
 import { GetActiveBannersUseCase } from '@application/use-cases/banner/get-active-banners.use-case';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
+import { GoogleCloudStorageService } from '@common/services/google-cloud-storage.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([BannerTypeormEntity])],
@@ -27,6 +28,7 @@ import { ImageOptimizationService } from '@common/services/image-optimization.se
     GetBannerByIdUseCase,
     GetActiveBannersUseCase,
     ImageOptimizationService,
+    GoogleCloudStorageService,
   ],
   exports: [BANNER_REPOSITORY, GetActiveBannersUseCase],
 })

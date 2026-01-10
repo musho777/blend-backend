@@ -26,6 +26,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 import { ImageOptimizationService } from '@common/services/image-optimization.service';
+import { GoogleCloudStorageService } from '@common/services/google-cloud-storage.service';
 import { FileUploadValidationPipe } from '@common/pipes/file-upload-validation.pipe';
 import { CreateBannerDto } from '../dtos/banner/create-banner.dto';
 import { UpdateBannerDto } from '../dtos/banner/update-banner.dto';
@@ -68,6 +69,7 @@ export class BannerController {
     private readonly getBannersUseCase: GetBannersUseCase,
     private readonly getBannerByIdUseCase: GetBannerByIdUseCase,
     private readonly imageOptimizationService: ImageOptimizationService,
+    private readonly gcsService: GoogleCloudStorageService,
   ) {}
 
   @Get()
@@ -142,7 +144,7 @@ export class BannerController {
 
     const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
       [file.path],
-      './uploads/banners',
+      './uploads/banners/temp-optimized',
       {
         preset: 'large',
         quality: 90,
@@ -152,7 +154,13 @@ export class BannerController {
       },
     );
 
-    createBannerDto.image = optimizedPaths[0].replace('./uploads', '/uploads');
+    // Upload optimized image to Google Cloud Storage
+    const gcsUrls = await this.gcsService.uploadMultipleFiles(
+      optimizedPaths,
+      'banners',
+    );
+
+    createBannerDto.image = gcsUrls[0];
 
     const banner = await this.createBannerUseCase.execute(createBannerDto);
     return BannerResponseDto.fromDomain(banner);
@@ -202,7 +210,7 @@ export class BannerController {
     if (file) {
       const optimizedPaths = await this.imageOptimizationService.optimizeMultipleImages(
         [file.path],
-        './uploads/banners',
+        './uploads/banners/temp-optimized',
         {
           preset: 'large',
           quality: 90,
@@ -212,7 +220,24 @@ export class BannerController {
         },
       );
 
-      updateBannerDto.image = optimizedPaths[0].replace('./uploads', '/uploads');
+      // Upload optimized image to Google Cloud Storage
+      const gcsUrls = await this.gcsService.uploadMultipleFiles(
+        optimizedPaths,
+        'banners',
+      );
+
+      updateBannerDto.image = gcsUrls[0];
+
+      // Get existing banner to delete old image from GCS
+      const existingBanner = await this.getBannerByIdUseCase.execute(id);
+      if (existingBanner.image) {
+        try {
+          await this.gcsService.deleteFile(existingBanner.image);
+        } catch (error) {
+          // Log error but don't fail the update if old image deletion fails
+          console.error('Failed to delete old banner image from GCS:', error);
+        }
+      }
     }
 
     const banner = await this.updateBannerUseCase.execute(id, updateBannerDto);
