@@ -9,6 +9,12 @@ export class SubcategoryTypeormEntity {
   @Column()
   title: string;
 
+  @Column({ name: 'title_am', default: '' })
+  titleAm: string;
+
+  @Column({ name: 'title_ru', default: '' })
+  titleRu: string;
+
   @Column({ name: 'category_id' })
   categoryId: string;
 

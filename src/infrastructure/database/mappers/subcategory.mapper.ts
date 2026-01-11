@@ -6,6 +6,8 @@ export class SubcategoryMapper {
     return new Subcategory(
       entity.id,
       entity.title,
+      entity.titleAm || '',
+      entity.titleRu || '',
       entity.categoryId,
       entity.createdAt,
       entity.updatedAt,
@@ -16,6 +18,8 @@ export class SubcategoryMapper {
     const entity = new SubcategoryTypeormEntity();
     entity.id = domain.id;
     entity.title = domain.title;
+    entity.titleAm = domain.titleAm;
+    entity.titleRu = domain.titleRu;
     entity.categoryId = domain.categoryId;
     return entity;
   }
@@ -23,6 +27,8 @@ export class SubcategoryMapper {
   static toTypeormPartial(domain: Partial<Subcategory>): Partial<SubcategoryTypeormEntity> {
     const entity: Partial<SubcategoryTypeormEntity> = {};
     if (domain.title !== undefined) entity.title = domain.title;
+    if (domain.titleAm !== undefined) entity.titleAm = domain.titleAm;
+    if (domain.titleRu !== undefined) entity.titleRu = domain.titleRu;
     if (domain.categoryId !== undefined) entity.categoryId = domain.categoryId;
     return entity;
   }

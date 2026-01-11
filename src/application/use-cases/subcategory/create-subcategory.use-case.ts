@@ -23,6 +23,8 @@ export class CreateSubcategoryUseCase {
     const subcategory = new Subcategory(
       uuidv4(),
       dto.title,
+      dto.titleAm || '',
+      dto.titleRu || '',
       dto.categoryId,
       new Date(),
       new Date(),

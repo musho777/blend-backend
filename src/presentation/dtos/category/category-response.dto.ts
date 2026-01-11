@@ -8,6 +8,12 @@ export class CategoryResponseDto {
   @ApiProperty({ example: 'Electronics' })
   title: string;
 
+  @ApiProperty({ example: 'Էլեկտրոնիկա', required: false })
+  titleAm: string;
+
+  @ApiProperty({ example: 'Электроника', required: false })
+  titleRu: string;
+
   @ApiProperty({ example: 'electronics' })
   slug: string;
 
@@ -24,6 +30,8 @@ export class CategoryResponseDto {
     return {
       id: category.id,
       title: category.title,
+      titleAm: category.titleAm,
+      titleRu: category.titleRu,
       slug: category.slug,
       image: category.image,
       createdAt: category.createdAt,

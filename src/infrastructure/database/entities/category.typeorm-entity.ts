@@ -8,6 +8,12 @@ export class CategoryTypeormEntity {
   @Column()
   title: string;
 
+  @Column({ name: 'title_am', default: '' })
+  titleAm: string;
+
+  @Column({ name: 'title_ru', default: '' })
+  titleRu: string;
+
   @Column({ unique: true })
   slug: string;
 

@@ -6,6 +6,24 @@ export class CreateCategoryDto {
   @IsString()
   title: string;
 
+  @ApiProperty({
+    example: 'Էլեկտրոնիկա',
+    description: 'Category title in Armenian',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleAm?: string;
+
+  @ApiProperty({
+    example: 'Электроника',
+    description: 'Category title in Russian',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleRu?: string;
+
   @ApiProperty({ example: 'electronics', description: 'URL-friendly slug (auto-generated if not provided)', required: false })
   @IsOptional()
   @IsString()
