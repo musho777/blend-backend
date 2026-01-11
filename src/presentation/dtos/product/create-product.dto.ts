@@ -11,9 +11,27 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 
 export class CreateProductDto {
-  @ApiProperty({ example: "iPhone 15 Pro", description: "Product title" })
+  @ApiProperty({ example: "iPhone 15 Pro", description: "Product title (English)" })
   @IsString()
   title: string;
+
+  @ApiProperty({
+    example: "iPhone 15 Pro",
+    description: "Product title in Armenian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleAm?: string;
+
+  @ApiProperty({
+    example: "iPhone 15 Pro",
+    description: "Product title in Russian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleRu?: string;
 
   @ApiProperty({ example: 999.99, description: "Product price", minimum: 0 })
   @Transform(({ value }) => Number(value))
@@ -51,12 +69,30 @@ export class CreateProductDto {
 
   @ApiProperty({
     example: "High-quality smartphone with advanced camera features",
-    description: "Product description",
+    description: "Product description (English)",
     required: false,
   })
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({
+    example: "Բարձրորակ սմարթֆոն առաջադեմ տեսախցիկի հնարավորություններով",
+    description: "Product description in Armenian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  descriptionAm?: string;
+
+  @ApiProperty({
+    example: "Высококачественный смартфон с расширенными возможностями камеры",
+    description: "Product description in Russian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  descriptionRu?: string;
 
   @ApiProperty({
     example: [

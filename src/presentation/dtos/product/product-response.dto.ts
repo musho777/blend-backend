@@ -8,6 +8,12 @@ export class ProductResponseDto {
   @ApiProperty({ example: "iPhone 15 Pro" })
   title: string;
 
+  @ApiProperty({ example: "iPhone 15 Pro", required: false })
+  titleAm: string;
+
+  @ApiProperty({ example: "iPhone 15 Pro", required: false })
+  titleRu: string;
+
   @ApiProperty({ example: 999.99 })
   price: number;
 
@@ -24,6 +30,18 @@ export class ProductResponseDto {
     example: "High-quality smartphone with advanced camera features",
   })
   description: string;
+
+  @ApiProperty({
+    example: "Բարձրորակ սմարթֆոն առաջադեմ տեսախցիկի հնարավորություններով",
+    required: false,
+  })
+  descriptionAm: string;
+
+  @ApiProperty({
+    example: "Высококачественный смартфон с расширенными возможностями камеры",
+    required: false,
+  })
+  descriptionRu: string;
 
   @ApiProperty({
     example: [
@@ -60,11 +78,15 @@ export class ProductResponseDto {
     return {
       id: product.id,
       title: product.title,
+      titleAm: product.titleAm,
+      titleRu: product.titleRu,
       price: product.price,
       stock: product.stock,
       categoryId: product.categoryId,
       subcategoryId: product.subcategoryId,
       description: product.description,
+      descriptionAm: product.descriptionAm,
+      descriptionRu: product.descriptionRu,
       imageUrls: product.imageUrls,
       isFeatured: product.isFeatured,
       isBestSeller: product.isBestSeller,

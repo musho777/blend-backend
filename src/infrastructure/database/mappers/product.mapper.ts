@@ -6,11 +6,15 @@ export class ProductMapper {
     return new Product(
       entity.id,
       entity.title,
+      entity.titleAm || '',
+      entity.titleRu || '',
       Number(entity.price),
       entity.stock,
       entity.categoryId,
       entity.subcategoryId || null,
       entity.description || '',
+      entity.descriptionAm || '',
+      entity.descriptionRu || '',
       entity.imageUrls || [],
       entity.isFeatured,
       entity.isBestSeller,
@@ -26,11 +30,15 @@ export class ProductMapper {
     const entity = new ProductTypeormEntity();
     entity.id = domain.id;
     entity.title = domain.title;
+    entity.titleAm = domain.titleAm;
+    entity.titleRu = domain.titleRu;
     entity.price = domain.price;
     entity.stock = domain.stock;
     entity.categoryId = domain.categoryId;
     entity.subcategoryId = domain.subcategoryId;
     entity.description = domain.description;
+    entity.descriptionAm = domain.descriptionAm;
+    entity.descriptionRu = domain.descriptionRu;
     entity.imageUrls = domain.imageUrls;
     entity.isFeatured = domain.isFeatured;
     entity.isBestSeller = domain.isBestSeller;
@@ -43,11 +51,15 @@ export class ProductMapper {
   static toTypeormPartial(domain: Partial<Product>): Partial<ProductTypeormEntity> {
     const entity: Partial<ProductTypeormEntity> = {};
     if (domain.title !== undefined) entity.title = domain.title;
+    if (domain.titleAm !== undefined) entity.titleAm = domain.titleAm;
+    if (domain.titleRu !== undefined) entity.titleRu = domain.titleRu;
     if (domain.price !== undefined) entity.price = domain.price;
     if (domain.stock !== undefined) entity.stock = domain.stock;
     if (domain.categoryId !== undefined) entity.categoryId = domain.categoryId;
     if (domain.subcategoryId !== undefined) entity.subcategoryId = domain.subcategoryId;
     if (domain.description !== undefined) entity.description = domain.description;
+    if (domain.descriptionAm !== undefined) entity.descriptionAm = domain.descriptionAm;
+    if (domain.descriptionRu !== undefined) entity.descriptionRu = domain.descriptionRu;
     if (domain.imageUrls !== undefined) entity.imageUrls = domain.imageUrls;
     if (domain.isFeatured !== undefined) entity.isFeatured = domain.isFeatured;
     if (domain.isBestSeller !== undefined) entity.isBestSeller = domain.isBestSeller;
