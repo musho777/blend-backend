@@ -14,6 +14,12 @@ export class BannerTypeormEntity {
   @Column({ nullable: true })
   text: string;
 
+  @Column({ name: 'text_am', default: '' })
+  textAm: string;
+
+  @Column({ name: 'text_ru', default: '' })
+  textRu: string;
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
