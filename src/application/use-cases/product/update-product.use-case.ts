@@ -13,16 +13,22 @@ import * as path from "path";
 
 export interface UpdateProductDto {
   title?: string;
+  titleAm?: string;
+  titleRu?: string;
   price?: number;
   stock?: number;
   categoryId?: string;
   subcategoryId?: string;
+  description?: string;
+  descriptionAm?: string;
+  descriptionRu?: string;
   imageUrls?: string[];
   imagesToRemove?: string[];
   isFeatured?: boolean;
   isBestSeller?: boolean;
   isBestSelect?: boolean;
   priority?: number;
+  disabled?: boolean;
 }
 
 @Injectable()

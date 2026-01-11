@@ -10,6 +10,12 @@ export class ProductTypeormEntity {
   @Column()
   title: string;
 
+  @Column({ name: 'title_am', default: '' })
+  titleAm: string;
+
+  @Column({ name: 'title_ru', default: '' })
+  titleRu: string;
+
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
@@ -24,6 +30,12 @@ export class ProductTypeormEntity {
 
   @Column('text', { nullable: true, default: '' })
   description: string;
+
+  @Column('text', { name: 'description_am', default: '' })
+  descriptionAm: string;
+
+  @Column('text', { name: 'description_ru', default: '' })
+  descriptionRu: string;
 
   @Column('json', { name: 'image_urls', nullable: true, default: () => "'[]'" })
   imageUrls: string[];

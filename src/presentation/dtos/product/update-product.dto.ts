@@ -8,6 +8,24 @@ export class UpdateProductDto {
   @IsString()
   title?: string;
 
+  @ApiProperty({
+    example: "iPhone 15 Pro Max",
+    description: "Product title in Armenian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleAm?: string;
+
+  @ApiProperty({
+    example: "iPhone 15 Pro Max",
+    description: "Product title in Russian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleRu?: string;
+
   @ApiProperty({ example: 1099.99, description: 'Product price', minimum: 0, required: false })
   @IsOptional()
   @Transform(({ value }) => value ? Number(value) : value)
@@ -38,6 +56,24 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @ApiProperty({
+    example: "Թարմացված ապրանքի նկարագրություն",
+    description: "Product description in Armenian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  descriptionAm?: string;
+
+  @ApiProperty({
+    example: "Обновленное описание продукта",
+    description: "Product description in Russian",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  descriptionRu?: string;
 
   @ApiProperty({ 
     example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg'], 
