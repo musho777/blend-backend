@@ -14,6 +14,12 @@ export class BannerResponseDto {
   @ApiProperty({ example: 'New Electronics Collection - Up to 50% Off', nullable: true })
   text: string | null;
 
+  @ApiProperty({ example: 'Նոր էլեկտրոնիկա - մինչև 50% զեղչ' })
+  textAm: string;
+
+  @ApiProperty({ example: 'Новая электроника - до 50% скидка' })
+  textRu: string;
+
   @ApiProperty({ example: true })
   isActive: boolean;
 
@@ -32,6 +38,8 @@ export class BannerResponseDto {
       image: banner.image,
       url: banner.url,
       text: banner.text,
+      textAm: banner.textAm,
+      textRu: banner.textRu,
       isActive: banner.isActive,
       priority: banner.priority,
       createdAt: banner.createdAt,

@@ -4,6 +4,8 @@ export class Banner {
     public image: string,
     public url: string,
     public text: string | null,
+    public textAm: string = '',
+    public textRu: string = '',
     public isActive: boolean,
     public priority: number,
     public readonly createdAt?: Date,
@@ -20,6 +22,14 @@ export class Banner {
 
   updateText(text: string | null): void {
     this.text = text;
+  }
+
+  updateTextAm(textAm: string): void {
+    this.textAm = textAm;
+  }
+
+  updateTextRu(textRu: string): void {
+    this.textRu = textRu;
   }
 
   updatePriority(priority: number): void {

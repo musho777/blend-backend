@@ -17,6 +17,8 @@ export class CreateBannerUseCase {
       dto.image || '',
       dto.url,
       dto.text || null,
+      dto.textAm || '',
+      dto.textRu || '',
       dto.isActive !== undefined ? dto.isActive : true,
       dto.priority !== undefined ? dto.priority : 1,
     );

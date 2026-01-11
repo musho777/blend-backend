@@ -18,6 +18,18 @@ export class CreateBannerDto {
   @MaxLength(200)
   text?: string;
 
+  @ApiProperty({ example: 'Նոր էլեկտրոնիկա - մինչև 50% զեղչ', description: 'Promotional text overlay in Armenian', required: false, maxLength: 200 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  textAm?: string;
+
+  @ApiProperty({ example: 'Новая электроника - до 50% скидка', description: 'Promotional text overlay in Russian', required: false, maxLength: 200 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  textRu?: string;
+
   @ApiProperty({ example: true, description: 'Controls if banner is shown on the website', default: true, required: false })
   @IsOptional()
   @Transform(({ value }) => {

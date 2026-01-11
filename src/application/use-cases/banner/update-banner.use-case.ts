@@ -25,6 +25,8 @@ export class UpdateBannerUseCase {
       dto.image !== undefined ? dto.image : existingBanner.image,
       dto.url !== undefined ? dto.url : existingBanner.url,
       dto.text !== undefined ? dto.text : existingBanner.text,
+      dto.textAm !== undefined ? dto.textAm : existingBanner.textAm,
+      dto.textRu !== undefined ? dto.textRu : existingBanner.textRu,
       dto.isActive !== undefined ? dto.isActive : existingBanner.isActive,
       dto.priority !== undefined ? dto.priority : existingBanner.priority,
       existingBanner.createdAt,
