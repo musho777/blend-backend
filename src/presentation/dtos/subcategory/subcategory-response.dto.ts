@@ -8,6 +8,12 @@ export class SubcategoryResponseDto {
   @ApiProperty({ example: 'Laptops' })
   title: string;
 
+  @ApiProperty({ example: 'Նոութբուքեր', required: false })
+  titleAm: string;
+
+  @ApiProperty({ example: 'Ноутбуки', required: false })
+  titleRu: string;
+
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   categoryId: string;
 
@@ -21,6 +27,8 @@ export class SubcategoryResponseDto {
     return {
       id: subcategory.id,
       title: subcategory.title,
+      titleAm: subcategory.titleAm,
+      titleRu: subcategory.titleRu,
       categoryId: subcategory.categoryId,
       createdAt: subcategory.createdAt,
       updatedAt: subcategory.updatedAt,

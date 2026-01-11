@@ -7,6 +7,24 @@ export class UpdateCategoryDto {
   @IsString()
   title?: string;
 
+  @ApiProperty({
+    example: 'Սպառողական էլեկտրոնիկա',
+    description: 'Category title in Armenian',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleAm?: string;
+
+  @ApiProperty({
+    example: 'Потребительская электроника',
+    description: 'Category title in Russian',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  titleRu?: string;
+
   @ApiProperty({ example: 'consumer-electronics', description: 'URL-friendly slug', required: false })
   @IsOptional()
   @IsString()

@@ -22,6 +22,8 @@ export class CreateCategoryUseCase {
     const category = new Category(
       uuidv4(),
       dto.title,
+      dto.titleAm || '',
+      dto.titleRu || '',
       slug,
       dto.image || '',
     );
