@@ -35,10 +35,12 @@ export class GoogleLoginUseCase {
   }> {
     const { email, firstName, lastName, googleId } = input;
 
+    const normalizedEmail = email.toLowerCase();
+
     let user = await this.userRepository.findByGoogleId(googleId);
 
     if (!user) {
-      user = await this.userRepository.findByEmail(email);
+      user = await this.userRepository.findByEmail(normalizedEmail);
 
       if (user) {
         await this.userRepository.update(user.id, {
@@ -49,7 +51,7 @@ export class GoogleLoginUseCase {
       } else {
         const newUser = new User(
           uuidv4(),
-          email,
+          normalizedEmail,
           null,
           firstName,
           lastName,

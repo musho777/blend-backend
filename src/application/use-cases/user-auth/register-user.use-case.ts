@@ -33,7 +33,9 @@ export class RegisterUserUseCase {
       throw new BadRequestException('Passwords do not match');
     }
 
-    const existingUser = await this.userRepository.findByEmail(email);
+    const normalizedEmail = email.toLowerCase();
+
+    const existingUser = await this.userRepository.findByEmail(normalizedEmail);
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
@@ -42,7 +44,7 @@ export class RegisterUserUseCase {
 
     const user = new User(
       uuidv4(),
-      email,
+      normalizedEmail,
       passwordHash,
       firstName,
       lastName,

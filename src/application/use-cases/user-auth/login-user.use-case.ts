@@ -29,7 +29,7 @@ export class LoginUserUseCase {
   }> {
     const { email, password } = input;
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email.toLowerCase());
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

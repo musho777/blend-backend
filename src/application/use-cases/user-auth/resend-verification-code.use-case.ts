@@ -22,7 +22,7 @@ export class ResendVerificationCodeUseCase {
   async execute(input: ResendCodeInput): Promise<{ message: string }> {
     const { email } = input;
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email.toLowerCase());
     if (!user) {
       throw new NotFoundException('User not found');
     }
