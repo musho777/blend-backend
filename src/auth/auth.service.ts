@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async validateAdmin(email: string, password: string) {
-    const admin = await this.adminRepository.findByEmail(email);
+    const admin = await this.adminRepository.findByEmail(email.toLowerCase());
 
     if (!admin) {
       throw new UnauthorizedException('Invalid credentials');

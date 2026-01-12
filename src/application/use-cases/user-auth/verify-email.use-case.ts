@@ -37,7 +37,7 @@ export class VerifyEmailUseCase {
   }> {
     const { email, otp } = input;
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail(email.toLowerCase());
     if (!user) {
       throw new NotFoundException('User not found');
     }
