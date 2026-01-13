@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -19,6 +20,7 @@ import {
   ApiParam,
   ApiConsumes,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
@@ -73,14 +75,21 @@ export class BannerController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all banners', description: 'Returns all banners including inactive ones, sorted by priority ASC (lowest priority number appears first)' })
+  @ApiOperation({ summary: 'Get all banners', description: 'Returns all banners including inactive ones, sorted by priority ASC (lowest priority number appears first). Use ?active=true to get only active banners.' })
+  @ApiQuery({
+    name: 'active',
+    required: false,
+    type: Boolean,
+    description: 'Filter by active status. Set to true to get only active banners',
+  })
   @ApiResponse({
     status: 200,
     description: 'List of all banners sorted by priority',
     type: [BannerResponseDto],
   })
-  async findAll(): Promise<BannerResponseDto[]> {
-    const banners = await this.getBannersUseCase.execute();
+  async findAll(@Query('active') active?: string): Promise<BannerResponseDto[]> {
+    const isActive = active === 'true';
+    const banners = await this.getBannersUseCase.execute(isActive ? true : undefined);
     return BannerResponseDto.fromDomainArray(banners);
   }
 

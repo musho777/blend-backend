@@ -9,7 +9,10 @@ export class GetBannersUseCase {
     private readonly bannerRepository: IBannerRepository,
   ) {}
 
-  async execute(): Promise<Banner[]> {
+  async execute(activeOnly?: boolean): Promise<Banner[]> {
+    if (activeOnly === true) {
+      return await this.bannerRepository.findActive();
+    }
     return await this.bannerRepository.findAll();
   }
 }
