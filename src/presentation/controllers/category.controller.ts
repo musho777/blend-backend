@@ -150,23 +150,24 @@ export class CategoryController {
     @UploadedFile() file?: Express.Multer.File
   ): Promise<CategoryResponseDto> {
     if (file) {
-      const optimizedPaths =
-        await this.imageOptimizationService.optimizeMultipleImages(
-          [file.path],
-          "./uploads/categories/temp-optimized",
-          {
-            preset: "medium",
-            quality: 85,
-            convertToWebP: true,
-            removeMetadata: true,
-            preserveAspectRatio: true,
-          }
-        );
+      // Optimization disabled - using original image
+      // const optimizedPaths =
+      //   await this.imageOptimizationService.optimizeMultipleImages(
+      //     [file.path],
+      //     "./uploads/categories/temp-optimized",
+      //     {
+      //       preset: "medium",
+      //       quality: 85,
+      //       convertToWebP: true,
+      //       removeMetadata: true,
+      //       preserveAspectRatio: true,
+      //     }
+      //   );
 
-      // Upload optimized image to Google Cloud Storage
+      // Upload original image to Google Cloud Storage
       const gcsUrl = await this.gcsService.uploadFile(
-        optimizedPaths[0],
-        `categories/${path.basename(optimizedPaths[0])}`
+        file.path,
+        `categories/${path.basename(file.path)}`
       );
 
       createCategoryDto.image = gcsUrl;
@@ -219,23 +220,24 @@ export class CategoryController {
     @UploadedFile() file?: Express.Multer.File
   ): Promise<CategoryResponseDto> {
     if (file) {
-      const optimizedPaths =
-        await this.imageOptimizationService.optimizeMultipleImages(
-          [file.path],
-          "./uploads/categories/temp-optimized",
-          {
-            preset: "medium",
-            quality: 85,
-            convertToWebP: true,
-            removeMetadata: true,
-            preserveAspectRatio: true,
-          }
-        );
+      // Optimization disabled - using original image
+      // const optimizedPaths =
+      //   await this.imageOptimizationService.optimizeMultipleImages(
+      //     [file.path],
+      //     "./uploads/categories/temp-optimized",
+      //     {
+      //       preset: "medium",
+      //       quality: 85,
+      //       convertToWebP: true,
+      //       removeMetadata: true,
+      //       preserveAspectRatio: true,
+      //     }
+      //   );
 
-      // Upload optimized image to Google Cloud Storage
+      // Upload original image to Google Cloud Storage
       const gcsUrl = await this.gcsService.uploadFile(
-        optimizedPaths[0],
-        `categories/${path.basename(optimizedPaths[0])}`
+        file.path,
+        `categories/${path.basename(file.path)}`
       );
 
       updateCategoryDto.image = gcsUrl;
