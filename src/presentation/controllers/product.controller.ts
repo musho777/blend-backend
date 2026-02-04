@@ -213,22 +213,23 @@ export class ProductController {
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
       const tempPaths = files.map((file) => file.path);
-      const optimizedPaths =
-        await this.imageOptimizationService.optimizeMultipleImages(
-          tempPaths,
-          "./uploads/products/temp-optimized",
-          {
-            preset: "large",
-            quality: 80,
-            convertToWebP: true,
-            removeMetadata: true,
-            preserveAspectRatio: true,
-          }
-        );
+      // Optimization disabled - using original images
+      // const optimizedPaths =
+      //   await this.imageOptimizationService.optimizeMultipleImages(
+      //     tempPaths,
+      //     "./uploads/products/temp-optimized",
+      //     {
+      //       preset: "large",
+      //       quality: 80,
+      //       convertToWebP: true,
+      //       removeMetadata: true,
+      //       preserveAspectRatio: true,
+      //     }
+      //   );
 
-      // Upload optimized images to Google Cloud Storage
+      // Upload original images to Google Cloud Storage
       const gcsUrls = await this.gcsService.uploadMultipleFiles(
-        optimizedPaths,
+        tempPaths,
         "products"
       );
 
@@ -298,22 +299,23 @@ export class ProductController {
   ): Promise<ProductResponseDto> {
     if (files && files.length > 0) {
       const tempPaths = files.map((file) => file.path);
-      const optimizedPaths =
-        await this.imageOptimizationService.optimizeMultipleImages(
-          tempPaths,
-          "./uploads/products/temp-optimized",
-          {
-            preset: "large",
-            quality: 80,
-            convertToWebP: true,
-            removeMetadata: true,
-            preserveAspectRatio: true,
-          }
-        );
+      // Optimization disabled - using original images
+      // const optimizedPaths =
+      //   await this.imageOptimizationService.optimizeMultipleImages(
+      //     tempPaths,
+      //     "./uploads/products/temp-optimized",
+      //     {
+      //       preset: "large",
+      //       quality: 80,
+      //       convertToWebP: true,
+      //       removeMetadata: true,
+      //       preserveAspectRatio: true,
+      //     }
+      //   );
 
-      // Upload optimized images to Google Cloud Storage
+      // Upload original images to Google Cloud Storage
       const gcsUrls = await this.gcsService.uploadMultipleFiles(
-        optimizedPaths,
+        tempPaths,
         "products"
       );
 
