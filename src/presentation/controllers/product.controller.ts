@@ -32,6 +32,7 @@ import { GoogleCloudStorageService } from "@common/services/google-cloud-storage
 import { CreateProductDto } from "../dtos/product/create-product.dto";
 import { UpdateProductDto } from "../dtos/product/update-product.dto";
 import { ProductResponseDto } from "../dtos/product/product-response.dto";
+import { GetProductsQueryDto } from "../dtos/product/get-products-query.dto";
 import {
   PaginationDto,
   PaginatedResponseDto,
@@ -80,24 +81,6 @@ export class ProductController {
 
   @Get()
   @ApiOperation({ summary: "Get all products with optional pagination and search" })
-  @ApiQuery({
-    name: "page",
-    required: false,
-    description: "Page number (starting from 1)",
-    example: 1,
-  })
-  @ApiQuery({
-    name: "limit",
-    required: false,
-    description: "Number of products per page (max 100)",
-    example: 10,
-  })
-  @ApiQuery({
-    name: "search",
-    required: false,
-    description: "Search products by name",
-    example: "iPhone",
-  })
   @ApiResponse({
     status: 200,
     description: "List of products with pagination metadata",
@@ -123,19 +106,18 @@ export class ProductController {
     },
   })
   async findAll(
-    @Query() paginationDto: PaginationDto,
-    @Query("search") search?: string
+    @Query() queryDto: GetProductsQueryDto
   ): Promise<PaginatedResponseDto<ProductResponseDto>> {
-    const page = paginationDto.page || 1;
-    const limit = paginationDto.limit || 10;
-    const skip = paginationDto.skip;
+    const page = queryDto.page || 1;
+    const limit = queryDto.limit || 10;
+    const skip = queryDto.skip;
     const result = await this.getProductsUseCase.executePaginated(
       {
         page,
         limit,
         skip,
       },
-      search
+      queryDto.search
     );
 
     const productDtos = ProductResponseDto.fromDomainArray(result.data);
