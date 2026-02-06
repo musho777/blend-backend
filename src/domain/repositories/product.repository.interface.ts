@@ -14,7 +14,7 @@ export interface PaginatedResult<T> {
 
 export interface IProductRepository {
   findAll(): Promise<Product[]>;
-  findAllPaginated(options: PaginationOptions): Promise<PaginatedResult<Product>>;
+  findAllPaginated(options: PaginationOptions, search?: string): Promise<PaginatedResult<Product>>;
   findById(id: string): Promise<Product | null>;
   findFeatured(): Promise<Product[]>;
   findBestSellers(): Promise<Product[]>;

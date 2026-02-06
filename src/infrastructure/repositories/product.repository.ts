@@ -25,13 +25,26 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findAllPaginated(
-    options: PaginationOptions
+    options: PaginationOptions,
+    search?: string
   ): Promise<PaginatedResult<Product>> {
-    const [entities, total] = await this.repository.findAndCount({
-      order: { priority: "DESC", createdAt: "DESC" },
-      skip: options.skip,
-      take: options.limit,
-    });
+    const queryBuilder = this.repository
+      .createQueryBuilder("product")
+      .where("product.disabled = :disabled", { disabled: false });
+
+    if (search) {
+      queryBuilder.andWhere("LOWER(product.title) LIKE LOWER(:search)", {
+        search: `%${search}%`,
+      });
+    }
+
+    queryBuilder
+      .orderBy("product.priority", "DESC")
+      .addOrderBy("product.createdAt", "DESC")
+      .skip(options.skip)
+      .take(options.limit);
+
+    const [entities, total] = await queryBuilder.getManyAndCount();
 
     const data = entities.map(ProductMapper.toDomain);
     return { data, total };

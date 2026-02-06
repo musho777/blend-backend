@@ -19,8 +19,9 @@ export class GetProductsUseCase {
   }
 
   async executePaginated(
-    options: PaginationOptions
+    options: PaginationOptions,
+    search?: string
   ): Promise<PaginatedResult<Product>> {
-    return await this.productRepository.findAllPaginated(options);
+    return await this.productRepository.findAllPaginated(options, search);
   }
 }

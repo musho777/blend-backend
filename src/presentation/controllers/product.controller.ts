@@ -79,7 +79,7 @@ export class ProductController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: "Get all products with optional pagination" })
+  @ApiOperation({ summary: "Get all products with optional pagination and search" })
   @ApiQuery({
     name: "page",
     required: false,
@@ -91,6 +91,12 @@ export class ProductController {
     required: false,
     description: "Number of products per page (max 100)",
     example: 10,
+  })
+  @ApiQuery({
+    name: "search",
+    required: false,
+    description: "Search products by name",
+    example: "iPhone",
   })
   @ApiResponse({
     status: 200,
@@ -117,16 +123,20 @@ export class ProductController {
     },
   })
   async findAll(
-    @Query() paginationDto: PaginationDto
+    @Query() paginationDto: PaginationDto,
+    @Query("search") search?: string
   ): Promise<PaginatedResponseDto<ProductResponseDto>> {
     const page = paginationDto.page || 1;
     const limit = paginationDto.limit || 10;
     const skip = paginationDto.skip;
-    const result = await this.getProductsUseCase.executePaginated({
-      page,
-      limit,
-      skip,
-    });
+    const result = await this.getProductsUseCase.executePaginated(
+      {
+        page,
+        limit,
+        skip,
+      },
+      search
+    );
 
     const productDtos = ProductResponseDto.fromDomainArray(result.data);
 
