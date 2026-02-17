@@ -1,5 +1,6 @@
 import { IsString, IsUUID, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class CreateSubcategoryDto {
   @ApiProperty({ example: 'Laptops', description: 'Subcategory title' })
@@ -30,6 +31,7 @@ export class CreateSubcategoryDto {
 
   @ApiProperty({ example: 1, description: 'Order index for sorting subcategories (default: 0)', required: false })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   orderIndex?: number;
 }
