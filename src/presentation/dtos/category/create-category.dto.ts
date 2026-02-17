@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCategoryDto {
@@ -33,4 +33,9 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   image?: string;
+
+  @ApiProperty({ example: 1, description: 'Order index for sorting categories (default: 0)', required: false })
+  @IsOptional()
+  @IsNumber()
+  orderIndex?: number;
 }

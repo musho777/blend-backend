@@ -6,6 +6,7 @@ export class Category {
     public titleRu: string = '',
     public slug: string,
     public image: string,
+    public orderIndex: number = 0,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
   ) {}
@@ -20,6 +21,10 @@ export class Category {
 
   updateImage(image: string): void {
     this.image = image;
+  }
+
+  updateOrderIndex(orderIndex: number): void {
+    this.orderIndex = orderIndex;
   }
 
   static generateSlug(title: string): string {

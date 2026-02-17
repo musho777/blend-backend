@@ -4,6 +4,7 @@ export class Subcategory {
   titleAm: string;
   titleRu: string;
   categoryId: string;
+  orderIndex: number;
   createdAt: Date;
   updatedAt: Date;
 
@@ -13,6 +14,7 @@ export class Subcategory {
     titleAm: string = '',
     titleRu: string = '',
     categoryId: string,
+    orderIndex: number = 0,
     createdAt: Date,
     updatedAt: Date,
   ) {
@@ -21,6 +23,7 @@ export class Subcategory {
     this.titleAm = titleAm;
     this.titleRu = titleRu;
     this.categoryId = categoryId;
+    this.orderIndex = orderIndex;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -31,5 +34,9 @@ export class Subcategory {
 
   updateCategory(categoryId: string): void {
     this.categoryId = categoryId;
+  }
+
+  updateOrderIndex(orderIndex: number): void {
+    this.orderIndex = orderIndex;
   }
 }

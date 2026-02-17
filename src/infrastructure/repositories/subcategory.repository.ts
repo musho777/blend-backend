@@ -15,7 +15,7 @@ export class SubcategoryRepository implements ISubcategoryRepository {
 
   async findAll(): Promise<Subcategory[]> {
     const entities = await this.repository.find({
-      order: { createdAt: 'DESC' },
+      order: { orderIndex: 'ASC' },
     });
     return entities.map(SubcategoryMapper.toDomain);
   }
@@ -28,7 +28,7 @@ export class SubcategoryRepository implements ISubcategoryRepository {
   async findByCategoryId(categoryId: string): Promise<Subcategory[]> {
     const entities = await this.repository.find({
       where: { categoryId },
-      order: { createdAt: 'DESC' },
+      order: { orderIndex: 'ASC' },
     });
     return entities.map(SubcategoryMapper.toDomain);
   }
