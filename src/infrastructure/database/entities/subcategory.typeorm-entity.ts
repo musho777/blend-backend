@@ -22,6 +22,9 @@ export class SubcategoryTypeormEntity {
   @JoinColumn({ name: 'category_id' })
   category: CategoryTypeormEntity;
 
+  @Column({ name: 'order_index', default: 0 })
+  orderIndex: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

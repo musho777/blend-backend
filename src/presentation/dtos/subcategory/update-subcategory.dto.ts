@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsOptional, IsUUID, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateSubcategoryDto {
@@ -29,4 +29,9 @@ export class UpdateSubcategoryDto {
   @IsOptional()
   @IsUUID()
   categoryId?: string;
+
+  @ApiProperty({ example: 2, description: 'Order index for sorting subcategories', required: false })
+  @IsOptional()
+  @IsNumber()
+  orderIndex?: number;
 }

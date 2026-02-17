@@ -17,6 +17,9 @@ export class SubcategoryResponseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   categoryId: string;
 
+  @ApiProperty({ example: 0 })
+  orderIndex: number;
+
   @ApiProperty({ example: '2024-01-01T00:00:00.000Z', required: false })
   createdAt?: Date;
 
@@ -30,6 +33,7 @@ export class SubcategoryResponseDto {
       titleAm: subcategory.titleAm,
       titleRu: subcategory.titleRu,
       categoryId: subcategory.categoryId,
+      orderIndex: subcategory.orderIndex,
       createdAt: subcategory.createdAt,
       updatedAt: subcategory.updatedAt,
     };

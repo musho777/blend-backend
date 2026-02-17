@@ -9,6 +9,7 @@ export class SubcategoryMapper {
       entity.titleAm || '',
       entity.titleRu || '',
       entity.categoryId,
+      entity.orderIndex ?? 0,
       entity.createdAt,
       entity.updatedAt,
     );
@@ -21,6 +22,7 @@ export class SubcategoryMapper {
     entity.titleAm = domain.titleAm;
     entity.titleRu = domain.titleRu;
     entity.categoryId = domain.categoryId;
+    entity.orderIndex = domain.orderIndex;
     return entity;
   }
 
@@ -30,6 +32,7 @@ export class SubcategoryMapper {
     if (domain.titleAm !== undefined) entity.titleAm = domain.titleAm;
     if (domain.titleRu !== undefined) entity.titleRu = domain.titleRu;
     if (domain.categoryId !== undefined) entity.categoryId = domain.categoryId;
+    if (domain.orderIndex !== undefined) entity.orderIndex = domain.orderIndex;
     return entity;
   }
 }

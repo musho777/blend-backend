@@ -10,6 +10,7 @@ export class CategoryMapper {
       entity.titleRu || '',
       entity.slug,
       entity.image,
+      entity.orderIndex ?? 0,
       entity.createdAt,
       entity.updatedAt,
     );
@@ -23,6 +24,7 @@ export class CategoryMapper {
     entity.titleRu = domain.titleRu;
     entity.slug = domain.slug;
     entity.image = domain.image;
+    entity.orderIndex = domain.orderIndex;
     return entity;
   }
 
@@ -33,6 +35,7 @@ export class CategoryMapper {
     if (domain.titleRu !== undefined) entity.titleRu = domain.titleRu;
     if (domain.slug !== undefined) entity.slug = domain.slug;
     if (domain.image !== undefined) entity.image = domain.image;
+    if (domain.orderIndex !== undefined) entity.orderIndex = domain.orderIndex;
     return entity;
   }
 }

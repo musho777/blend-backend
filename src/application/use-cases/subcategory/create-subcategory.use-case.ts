@@ -26,6 +26,7 @@ export class CreateSubcategoryUseCase {
       dto.titleAm || '',
       dto.titleRu || '',
       dto.categoryId,
+      dto.orderIndex ?? 0,
       new Date(),
       new Date(),
     );

@@ -15,7 +15,7 @@ export class CategoryRepository implements ICategoryRepository {
 
   async findAll(): Promise<Category[]> {
     const entities = await this.repository.find({
-      order: { createdAt: 'DESC' },
+      order: { orderIndex: 'ASC' },
     });
     return entities.map(CategoryMapper.toDomain);
   }

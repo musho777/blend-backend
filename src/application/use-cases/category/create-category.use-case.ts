@@ -26,6 +26,7 @@ export class CreateCategoryUseCase {
       dto.titleRu || '',
       slug,
       dto.image || '',
+      dto.orderIndex ?? 0,
     );
 
     return await this.categoryRepository.create(category);

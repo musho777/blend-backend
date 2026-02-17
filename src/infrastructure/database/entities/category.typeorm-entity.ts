@@ -20,6 +20,9 @@ export class CategoryTypeormEntity {
   @Column()
   image: string;
 
+  @Column({ name: 'order_index', default: 0 })
+  orderIndex: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
