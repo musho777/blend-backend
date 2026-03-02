@@ -10,6 +10,8 @@ import { GetOrderByIdUseCase } from '@application/use-cases/order/get-order-by-i
 import { UpdateOrderStatusUseCase } from '@application/use-cases/order/update-order-status.use-case';
 import { DeleteOrderUseCase } from '@application/use-cases/order/delete-order.use-case';
 import { GetOrderStatisticsUseCase } from '@application/use-cases/order/get-order-statistics.use-case';
+import { ExportOrdersToExcelUseCase } from '@application/use-cases/order/export-orders-to-excel.use-case';
+import { ExcelExportService } from '@common/services/excel-export.service';
 import { ProductModule } from './product.module';
 
 @Module({
@@ -29,6 +31,8 @@ import { ProductModule } from './product.module';
     UpdateOrderStatusUseCase,
     DeleteOrderUseCase,
     GetOrderStatisticsUseCase,
+    ExportOrdersToExcelUseCase,
+    ExcelExportService,
   ],
   exports: [ORDER_REPOSITORY],
 })

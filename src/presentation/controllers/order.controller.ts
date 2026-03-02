@@ -10,7 +10,11 @@ import {
   Query,
   Req,
   Inject,
+  StreamableFile,
+  Header,
+  Res,
 } from "@nestjs/common";
+import { Response } from "express";
 import {
   ApiTags,
   ApiOperation,
@@ -26,12 +30,14 @@ import { UserJwtAuthGuard } from "@auth/guards/user-jwt-auth.guard";
 import { CreateOrderDto } from "../dtos/order/create-order.dto";
 import { UpdateOrderStatusDto } from "../dtos/order/update-order-status.dto";
 import { OrderResponseDto } from "../dtos/order/order-response.dto";
+import { ExportOrdersQueryDto } from "../dtos/order/export-orders-query.dto";
 import { CreateOrderUseCase } from "@application/use-cases/order/create-order.use-case";
 import { GetAllOrdersUseCase } from "@application/use-cases/order/get-all-orders.use-case";
 import { GetOrderByIdUseCase } from "@application/use-cases/order/get-order-by-id.use-case";
 import { UpdateOrderStatusUseCase } from "@application/use-cases/order/update-order-status.use-case";
 import { DeleteOrderUseCase } from "@application/use-cases/order/delete-order.use-case";
 import { GetOrderStatisticsUseCase } from "@application/use-cases/order/get-order-statistics.use-case";
+import { ExportOrdersToExcelUseCase } from "@application/use-cases/order/export-orders-to-excel.use-case";
 import { IOrderRepository, ORDER_REPOSITORY } from "@domain/repositories/order.repository.interface";
 
 @ApiTags("Orders")
@@ -45,6 +51,7 @@ export class OrderController {
     private readonly updateOrderStatusUseCase: UpdateOrderStatusUseCase,
     private readonly deleteOrderUseCase: DeleteOrderUseCase,
     private readonly getOrderStatisticsUseCase: GetOrderStatisticsUseCase,
+    private readonly exportOrdersToExcelUseCase: ExportOrdersToExcelUseCase,
   ) {}
   
   @Get()
@@ -125,6 +132,77 @@ export class OrderController {
       orders: OrderResponseDto.fromDomainArray(paginatedOrders),
       pagination: { page: pageNum, limit: limitNum, total, pages },
     };
+  }
+
+  @Get('export/excel')
+  @ApiOperation({
+    summary: 'Export orders to Excel',
+    description: 'Export filtered orders with items to Excel file. All filters are optional.',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['pending', 'rejected', 'success'],
+    description: 'Filter by order status',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    description: 'Filter orders from this date (ISO format: YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    description: 'Filter orders until this date (ISO format: YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'paymentMethod',
+    required: false,
+    enum: ['cash_on_delivery', 'card', 'online'],
+    description: 'Filter by payment method',
+  })
+  @ApiQuery({
+    name: 'customerEmail',
+    required: false,
+    description: 'Filter by customer email (exact match)',
+  })
+  @ApiQuery({
+    name: 'customerPhone',
+    required: false,
+    description: 'Filter by customer phone (partial match)',
+  })
+  @ApiQuery({
+    name: 'minTotal',
+    required: false,
+    type: Number,
+    description: 'Minimum order total price',
+  })
+  @ApiQuery({
+    name: 'maxTotal',
+    required: false,
+    type: Number,
+    description: 'Maximum order total price',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Excel file generated successfully',
+    content: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+        schema: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  async exportToExcel(
+    @Query() filters: ExportOrdersQueryDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<StreamableFile> {
+    const buffer = await this.exportOrdersToExcelUseCase.execute(filters);
+    const filename = `orders-export-${new Date().toISOString().split('T')[0]}.xlsx`;
+    res.set({
+      'Content-Disposition': `attachment; filename="${filename}"`,
+    });
+    return new StreamableFile(buffer);
   }
 
   @Get(":id")
